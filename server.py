@@ -40,3 +40,4 @@ class miServidor(SimpleHTTPRequestHandler):
 
 print(f"Servidor corriendo en el puerto {port}")
 server = HTTPServer(("localhost",port),miServidor)
+server.serve_forever()
