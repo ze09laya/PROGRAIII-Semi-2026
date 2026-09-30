@@ -1,5 +1,5 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib import parse 
+from urllib import parse
 from urllib.parse import urlparse, parse_qs
 import crud_clientes
 
@@ -7,6 +7,7 @@ import json
 
 port = 3000
 crudClientes = crud_clientes.crud_clientes()
+
 
 class miServidor(SimpleHTTPRequestHandler):
     def do_POST(self):
@@ -18,7 +19,7 @@ class miServidor(SimpleHTTPRequestHandler):
         respuesta = {'msg': crudClientes.administrar(datos)}
 
         self.send_response(200)
-        self.send_header("Content-type","application/json")
+        self.send_header("Content-type", "application/json")
         self.end_headers()
         self.wfile.write(json.dumps(respuesta).encode("utf-8"))
 
@@ -26,18 +27,21 @@ class miServidor(SimpleHTTPRequestHandler):
         urlParse = urlparse(self.path)
         qs = parse_qs(urlParse.query)
 
-        if urlParse.path == "/saludo":
-            saludo = qs["nombre"][0] + " bienvenido a Python"
+        if urlParse.path == "/clientes":
+            buscar = qs.get('buscar', [''])[0]
+            print(buscar)
+            datos = crudClientes.consultar(buscar)
 
             self.send_response(200)
-            self.send_header("Content-type","text/html")
+            self.send_header("Content-type", "text/json")
             self.end_headers()
-            self.wfile.write(saludo.encode("utf-8"))
+            self.wfile.write(json.dumps(datos).encode("utf-8"))
 
-        if self.path == "/":
+        elif self.path == "/":
             self.path = "/index.html"
             return SimpleHTTPRequestHandler.do_GET(self)
 
+
 print(f"Servidor corriendo en el puerto {port}")
-server = HTTPServer(("localhost",port),miServidor)
+server = HTTPServer(("localhost", port), miServidor)
 server.serve_forever()
