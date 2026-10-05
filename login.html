@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Akari Store - Login</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+
+<body class="bg-light">
+
+
+    <div class="container min-vh-100
+                d-flex align-items-center
+                justify-content-center">
+
+
+        <div class="row w-100 justify-content-center">
+
+
+            <div class="col-12 col-sm-10
+                        col-md-7 col-lg-5 col-xl-4">
+
+
+                <div class="card shadow border-0 rounded-4">
+
+
+                    <div class="card-body p-4 p-md-5">
+
+
+                        <!-- LOGO / NOMBRE -->
+
+                        <div class="text-center mb-4">
+
+                            <h1 class="fw-bold">
+                                Akari Store
+                            </h1>
+
+                            <p class="text-muted mb-0">
+                                Camisas personalizadas
+                            </p>
+
+                        </div>
+
+
+                        <!-- LOGIN -->
+
+                        <form id="frmLogin">
+
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="txtUsuario"
+                                    class="form-label">
+
+                                    Usuario
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control form-control-lg"
+                                    id="txtUsuario"
+                                    placeholder="Ingrese su usuario"
+                                    required>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="txtContrasena"
+                                    class="form-label">
+
+                                    Contraseña
+
+                                </label>
+
+                                <input
+                                    type="password"
+                                    class="form-control form-control-lg"
+                                    id="txtContrasena"
+                                    placeholder="Ingrese su contraseña"
+                                    required>
+
+                            </div>
+
+
+                            <div
+                                id="divMensaje"
+                                class="mb-3">
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-dark btn-lg w-100">
+
+                                Iniciar sesión
+
+                            </button>
+
+
+                        </form>
+
+
+                    </div>
+
+                </div>
+
+
+                <p class="text-center text-muted mt-3 small">
+
+                    © 2026 Akari Store
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        document.getElementById("frmLogin").onsubmit = function(e) {
+
+            e.preventDefault();
+
+
+            let usuario =
+                document.getElementById("txtUsuario").value;
+
+            let contrasena =
+                document.getElementById("txtContrasena").value;
+
+
+            let datos = {
+
+                usuario: usuario,
+
+                contrasena: contrasena
+
+            };
+
+
+            fetch("/login", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify(datos)
+
+            })
+
+
+            .then(response => response.json())
+
+
+            .then(data => {
+
+
+                let mensaje =
+                    document.getElementById("divMensaje");
+
+
+                if (data.estado) {
+
+
+                    mensaje.innerHTML = `
+                    
+                        <div class="alert alert-success">
+                            ${data.mensaje}
+                        </div>
+
+                    `;
+
+
+                    localStorage.setItem(
+                        "usuario",
+                        data.usuario
+                    );
+
+
+                    localStorage.setItem(
+                        "rol",
+                        data.rol
+                    );
+
+
+                    setTimeout(function() {
+
+                        window.location.href =
+                            "/index.html";
+
+                    }, 1000);
+
+
+                } else {
+
+
+                    mensaje.innerHTML = `
+                    
+                        <div class="alert alert-danger">
+                            ${data.mensaje}
+                        </div>
+
+                    `;
+
+                }
+
+            })
+
+            .catch(error => {
+
+                document.getElementById(
+                    "divMensaje"
+                ).innerHTML = `
+
+                    <div class="alert alert-danger">
+                        No se pudo conectar con el servidor.
+                    </div>
+
+                `;
+
+                console.log(error);
+
+            });
+
+        };
+
+    </script>
+
+
+</body>
+
+</html>
