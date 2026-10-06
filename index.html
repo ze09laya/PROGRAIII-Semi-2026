@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Akari Store</title>
+
+
+    <!-- BOOTSTRAP -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+
+    <style>
+
+        :root {
+
+            --morado:
+                #7e22ce;
+
+            --morado-oscuro:
+                #3b0764;
+
+            --morado-claro:
+                #a855f7;
+
+            --fondo:
+                #f7f3fb;
+        }
+
+
+        body {
+
+            background:
+                var(--fondo);
+
+            font-family:
+                'Segoe UI',
+                Tahoma,
+                Geneva,
+                Verdana,
+                sans-serif;
+        }
+
+
+        /* =================================================
+           NAVBAR
+        ================================================= */
+
+        .navbar-akari {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b0764,
+                    #7e22ce
+                );
+
+            box-shadow:
+                0 4px 15px
+                rgba(0,0,0,.2);
+        }
+
+
+        .logo-navbar {
+
+            width: 45px;
+
+            height: 45px;
+
+            object-fit: contain;
+
+            border-radius: 50%;
+
+            background: white;
+
+            padding: 4px;
+        }
+
+
+        .brand {
+
+            font-size: 1.6rem;
+
+            font-weight: 800;
+
+            color: white;
+        }
+
+
+        /* =================================================
+           HERO
+        ================================================= */
+
+        .hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4c1d95,
+                    #7e22ce
+                );
+
+            color: white;
+
+            padding:
+                70px 20px;
+
+            border-radius:
+                0 0 30px 30px;
+        }
+
+
+        .hero h1 {
+
+            font-weight: 800;
+
+            font-size:
+                clamp(
+                    2rem,
+                    5vw,
+                    4rem
+                );
+        }
+
+
+        /* =================================================
+           PRODUCTOS
+        ================================================= */
+
+        .product-card {
+
+            border: none;
+
+            border-radius:
+                18px;
+
+            overflow: hidden;
+
+            background: white;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,.08);
+
+            transition:
+                .3s;
+        }
+
+
+        .product-card:hover {
+
+            transform:
+                translateY(-5px);
+
+            box-shadow:
+                0 10px 30px
+                rgba(0,0,0,.15);
+        }
+
+
+        .product-image {
+
+            height: 230px;
+
+            width: 100%;
+
+            object-fit: cover;
+
+            background:
+                #eee;
+        }
+
+
+        .price {
+
+            color:
+                var(--morado);
+
+            font-size:
+                1.3rem;
+
+            font-weight:
+                800;
+        }
+
+
+        /* =================================================
+           BOTONES
+        ================================================= */
+
+        .btn-akari {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7e22ce,
+                    #6b21a8
+                );
+
+            color: white;
+
+            border: none;
+
+            font-weight: 600;
+        }
+
+
+        .btn-akari:hover {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6b21a8,
+                    #4c1d95
+                );
+        }
+
+
+        /* =================================================
+           MODAL
+        ================================================= */
+
+        .modal-header {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7e22ce,
+                    #4c1d95
+                );
+
+            color: white;
+        }
+
+
+        .preview {
+
+            width: 100%;
+
+            max-height: 220px;
+
+            object-fit: contain;
+
+            border-radius: 12px;
+
+            display: none;
+
+            background:
+                #f3f3f3;
+
+            padding: 5px;
+        }
+
+
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 576px) {
+
+            .hero {
+
+                padding:
+                    45px 15px;
+            }
+
+            .brand {
+
+                font-size:
+                    1.25rem;
+            }
+
+            .product-image {
+
+                height:
+                    200px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-akari">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand d-flex align-items-center gap-2"
+            href="/"
+        >
+
+            <!-- Si tienes logo -->
+            <img
+                src="/img/logo-akari.png"
+                class="logo-navbar"
+                alt="Akari Store"
+            >
+
+            <span class="brand">
+                Akari Store
+            </span>
+
+        </a>
+
+
+        <div class="d-flex align-items-center gap-2">
+
+            <span
+                class="text-white d-none d-sm-inline"
+            >
+                <i class="fas fa-user"></i>
+                <span id="usuarioActual">
+                    Usuario
+                </span>
+            </span>
+
+
+            <button
+                class="btn btn-light"
+                onclick="cerrarSesion()"
+            >
+
+                <i class="fas fa-right-from-bracket"></i>
+
+                <span class="d-none d-sm-inline">
+                    Cerrar sesión
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-8">
+
+                <h1>
+                    Personaliza tu estilo
+                </h1>
+
+                <p class="lead">
+
+                    Camisas, tazas y cuadros metálicos
+                    personalizados para ti.
+
+                </p>
+
+            </div>
+
+
+            <div class="col-md-4 text-center">
+
+                <i
+                    class="fas fa-shirt"
+                    style="
+                        font-size:120px;
+                        opacity:.8;
+                    "
+                ></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CATÁLOGO
+===================================================== -->
+
+<main class="container py-5">
+
+
+    <div
+        class="
+            d-flex
+            flex-column
+            flex-md-row
+            justify-content-between
+            align-items-md-center
+            gap-3
+            mb-4
+        "
+    >
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                Nuestro catálogo
+
+            </h2>
+
+            <p class="text-muted">
+
+                Encuentra productos personalizados
+                para cada ocasión.
+
+            </p>
+
+        </div>
+
+
+        <button
+            class="btn btn-akari"
+            data-bs-toggle="modal"
+            data-bs-target="#modalProducto"
+        >
+
+            <i class="fas fa-plus"></i>
+
+            Agregar producto
+
+        </button>
+
+    </div>
+
+
+
+    <!-- FILTROS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-8 mb-2">
+
+            <input
+                type="text"
+                id="txtBuscar"
+                class="form-control"
+                placeholder="Buscar producto..."
+                onkeyup="filtrarProductos()"
+            >
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <select
+                id="cmbFiltroCategoria"
+                class="form-select"
+                onchange="filtrarProductos()"
+            >
+
+                <option value="">
+                    Todas las categorías
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PRODUCTOS -->
+
+    <div
+        id="contenedorProductos"
+        class="row g-4"
+    >
+
+        <div class="col-12 text-center">
+
+            <div class="spinner-border text-primary"></div>
+
+            <p class="mt-2">
+                Cargando productos...
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     MODAL AGREGAR PRODUCTO
+===================================================== -->
+
+<div
+    class="modal fade"
+    id="modalProducto"
+    tabindex="-1"
+>
+
+    <div
+        class="
+            modal-dialog
+            modal-lg
+            modal-dialog-centered
+        "
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    <i class="fas fa-box"></i>
+
+                    Agregar producto
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+
+
+            <form id="frmProducto">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+
+                        <!-- NOMBRE -->
+
+                        <div class="col-md-8">
+
+                            <label
+                                class="form-label"
+                            >
+                                Nombre del producto
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="txtNombreProducto"
+                                placeholder="Ej. Camisa personalizada"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- CATEGORÍA -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                class="form-label"
+                            >
+                                Categoría
+                            </label>
+
+                            <select
+                                class="form-select"
+                                id="cmbCategoria"
+                                required
+                            >
+
+                                <option value="">
+                                    Seleccione
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- PRECIO -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                class="form-label"
+                            >
+                                Precio
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    $
+                                </span>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    class="form-control"
+                                    id="txtPrecio"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EXISTENCIAS -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                class="form-label"
+                            >
+                                Existencias
+                            </label>
+
+                            <input
+                                type="number"
+                                min="0"
+                                class="form-control"
+                                id="txtExistencias"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- IMAGEN -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                class="form-label"
+                            >
+                                Imagen
+                            </label>
+
+                            <input
+                                type="file"
+                                class="form-control"
+                                id="txtImagen"
+                                accept="
+                                    image/png,
+                                    image/jpeg,
+                                    image/webp
+                                "
+                            >
+
+                            <small class="text-muted">
+
+                                JPG, PNG o WEBP
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- PREVIEW -->
+
+                        <div class="col-12">
+
+                            <img
+                                id="previewImagen"
+                                class="preview"
+                                alt="Vista previa"
+                            >
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <div class="col-12">
+
+                            <label
+                                class="form-label"
+                            >
+                                Descripción
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                id="txtDescripcion"
+                                rows="4"
+                                placeholder="
+                                    Describa el producto...
+                                "
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- MENSAJE -->
+
+                        <div
+                            id="mensajeProducto"
+                            class="col-12"
+                        ></div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-akari"
+                    >
+
+                        <i class="fas fa-save"></i>
+
+                        Guardar producto
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- BOOTSTRAP JS -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+
+<script>
+
+let productos = [];
+
+
+// ========================================================
+// INICIO
+// ========================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        verificarSesion();
+
+        cargarCategorias();
+
+        cargarProductos();
+
+    }
+);
+
+
+// ========================================================
+// SESIÓN
+// ========================================================
+
+function verificarSesion() {
+
+    const usuario =
+        localStorage.getItem("usuario");
+
+    if (usuario) {
+
+        document.getElementById(
+            "usuarioActual"
+        ).textContent = usuario;
+
+    }
+
+}
+
+
+// ========================================================
+// CERRAR SESIÓN
+// ========================================================
+
+function cerrarSesion() {
+
+    localStorage.removeItem("usuario");
+
+    localStorage.removeItem("rol");
+
+    window.location.href =
+        "/login.html";
+
+}
+
+
+// ========================================================
+// CATEGORÍAS
+// ========================================================
+
+function cargarCategorias() {
+
+    fetch("/categorias")
+
+    .then(response =>
+        response.json()
+    )
+
+    .then(data => {
+
+        if (!data.estado) {
+
+            console.error(
+                data.mensaje
+            );
+
+            return;
+
+        }
+
+
+        const select =
+            document.getElementById(
+                "cmbCategoria"
+            );
+
+
+        const filtro =
+            document.getElementById(
+                "cmbFiltroCategoria"
+            );
+
+
+        data.categorias.forEach(
+            categoria => {
+
+                const opcion =
+                    document.createElement(
+                        "option"
+                    );
+
+                opcion.value =
+                    categoria.id_categoria;
+
+                opcion.textContent =
+                    categoria.nombre;
+
+                select.appendChild(
+                    opcion
+                );
+
+
+                const opcionFiltro =
+                    document.createElement(
+                        "option"
+                    );
+
+                opcionFiltro.value =
+                    categoria.id_categoria;
+
+                opcionFiltro.textContent =
+                    categoria.nombre;
+
+                filtro.appendChild(
+                    opcionFiltro
+                );
+
+            }
+        );
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+    });
+
+}
+
+
+// ========================================================
+// PRODUCTOS
+// ========================================================
+
+function cargarProductos() {
+
+    fetch("/productos")
+
+    .then(response =>
+        response.json()
+    )
+
+    .then(data => {
+
+        if (!data.estado) {
+
+            document.getElementById(
+                "contenedorProductos"
+            ).innerHTML = `
+
+                <div class="col-12">
+
+                    <div class="alert alert-danger">
+
+                        ${data.mensaje}
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        productos =
+            data.productos;
+
+        mostrarProductos(
+            productos
+        );
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById(
+            "contenedorProductos"
+        ).innerHTML = `
+
+            <div class="col-12">
+
+                <div class="alert alert-danger">
+
+                    No se pudo conectar
+                    con el servidor.
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+// ========================================================
+// MOSTRAR PRODUCTOS
+// ========================================================
+
+function mostrarProductos(lista) {
+
+    const contenedor =
+        document.getElementById(
+            "contenedorProductos"
+        );
+
+
+    if (lista.length === 0) {
+
+        contenedor.innerHTML = `
+
+            <div class="col-12 text-center">
+
+                <i
+                    class="fas fa-box-open"
+                    style="font-size:60px"
+                ></i>
+
+                <h4 class="mt-3">
+
+                    No hay productos.
+
+                </h4>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    contenedor.innerHTML = "";
+
+
+    lista.forEach(producto => {
+
+        const imagen =
+            producto.imagen
+            ?
+            producto.imagen
+            :
+            "https://via.placeholder.com/500x400?text=Akari+Store";
+
+
+        const tarjeta = `
+
+            <div class="col-12 col-sm-6 col-lg-4">
+
+                <div class="product-card h-100">
+
+                    <img
+                        src="${imagen}"
+                        class="product-image"
+                        alt="${producto.nombre}"
+                    >
+
+
+                    <div class="p-3">
+
+                        <span class="badge bg-secondary">
+
+                            ${producto.categoria || ""}
+
+                        </span>
+
+
+                        <h5 class="fw-bold mt-2">
+
+                            ${producto.nombre}
+
+                        </h5>
+
+
+                        <p class="text-muted">
+
+                            ${producto.descripcion || ""}
+
+                        </p>
+
+
+                        <div class="
+                            d-flex
+                            justify-content-between
+                            align-items-center
+                        ">
+
+                            <span class="price">
+
+                                $${Number(
+                                    producto.precio
+                                ).toFixed(2)}
+
+                            </span>
+
+
+                            <small class="text-muted">
+
+                                Stock:
+                                ${producto.existencias}
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        contenedor.innerHTML +=
+            tarjeta;
+
+    });
+
+}
+
+
+// ========================================================
+// BUSCAR / FILTRAR
+// ========================================================
+
+function filtrarProductos() {
+
+    const texto =
+        document.getElementById(
+            "txtBuscar"
+        ).value.toLowerCase();
+
+
+    const categoria =
+        document.getElementById(
+            "cmbFiltroCategoria"
+        ).value;
+
+
+    const filtrados =
+        productos.filter(
+            producto => {
+
+                const coincideTexto =
+                    producto.nombre
+                        .toLowerCase()
+                        .includes(texto);
+
+
+                const coincideCategoria =
+                    categoria === ""
+                    ||
+                    String(
+                        producto.id_categoria
+                    ) === String(categoria);
+
+
+                return (
+                    coincideTexto
+                    &&
+                    coincideCategoria
+                );
+
+            }
+        );
+
+
+    mostrarProductos(
+        filtrados
+    );
+
+}
+
+
+// ========================================================
+// VISTA PREVIA DE IMAGEN
+// ========================================================
+
+document.getElementById(
+    "txtImagen"
+).addEventListener(
+    "change",
+    function() {
+
+        const archivo =
+            this.files[0];
+
+
+        const preview =
+            document.getElementById(
+                "previewImagen"
+            );
+
+
+        if (!archivo) {
+
+            preview.src = "";
+
+            preview.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        const lector =
+            new FileReader();
+
+
+        lector.onload =
+            function(evento) {
+
+                preview.src =
+                    evento.target.result;
+
+                preview.style.display =
+                    "block";
+
+            };
+
+
+        lector.readAsDataURL(
+            archivo
+        );
+
+    }
+);
+
+
+// ========================================================
+// GUARDAR PRODUCTO
+// ========================================================
+
+document.getElementById(
+    "frmProducto"
+).addEventListener(
+    "submit",
+    function(e) {
+
+        e.preventDefault();
+
+
+        const nombre =
+            document.getElementById(
+                "txtNombreProducto"
+            ).value;
+
+
+        const categoria =
+            document.getElementById(
+                "cmbCategoria"
+            ).value;
+
+
+        const precio =
+            document.getElementById(
+                "txtPrecio"
+            ).value;
+
+
+        const existencias =
+            document.getElementById(
+                "txtExistencias"
+            ).value;
+
+
+        const descripcion =
+            document.getElementById(
+                "txtDescripcion"
+            ).value;
+
+
+        const imagen =
+            document.getElementById(
+                "txtImagen"
+            ).files[0];
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "nombre",
+            nombre
+        );
+
+
+        formData.append(
+            "categoria",
+            categoria
+        );
+
+
+        formData.append(
+            "precio",
+            precio
+        );
+
+
+        formData.append(
+            "existencias",
+            existencias
+        );
+
+
+        formData.append(
+            "descripcion",
+            descripcion
+        );
+
+
+        if (imagen) {
+
+            formData.append(
+                "imagen",
+                imagen
+            );
+
+        }
+
+
+        const boton =
+            this.querySelector(
+                "button[type='submit']"
+            );
+
+
+        boton.disabled =
+            true;
+
+
+        boton.innerHTML = `
+
+            <span
+                class="spinner-border spinner-border-sm"
+            ></span>
+
+            Guardando...
+
+        `;
+
+
+        fetch(
+            "/productos",
+            {
+                method: "POST",
+                body: formData
+            }
+        )
+
+        .then(response =>
+            response.json()
+        )
+
+        .then(data => {
+
+            boton.disabled =
+                false;
+
+
+            boton.innerHTML = `
+
+                <i class="fas fa-save"></i>
+
+                Guardar producto
+
+            `;
+
+
+            const mensaje =
+                document.getElementById(
+                    "mensajeProducto"
+                );
+
+
+            if (data.estado) {
+
+                mensaje.innerHTML = `
+
+                    <div class="
+                        alert
+                        alert-success
+                    ">
+
+                        <i class="
+                            fas
+                            fa-check-circle
+                        "></i>
+
+                        ${data.mensaje}
+
+                    </div>
+
+                `;
+
+
+                document.getElementById(
+                    "frmProducto"
+                ).reset();
+
+
+                document.getElementById(
+                    "previewImagen"
+                ).style.display =
+                    "none";
+
+
+                cargarProductos();
+
+
+                setTimeout(
+                    function() {
+
+                        const modal =
+                            bootstrap.Modal
+                            .getInstance(
+                                document.getElementById(
+                                    "modalProducto"
+                                )
+                            );
+
+                        if (modal) {
+
+                            modal.hide();
+
+                        }
+
+                    },
+                    1000
+                );
+
+
+            } else {
+
+                mensaje.innerHTML = `
+
+                    <div class="
+                        alert
+                        alert-danger
+                    ">
+
+                        ${data.mensaje}
+
+                    </div>
+
+                `;
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+
+            boton.disabled =
+                false;
+
+
+            boton.innerHTML = `
+
+                <i class="fas fa-save"></i>
+
+                Guardar producto
+
+            `;
+
+
+            document.getElementById(
+                "mensajeProducto"
+            ).innerHTML = `
+
+                <div class="
+                    alert
+                    alert-danger
+                ">
+
+                    No se pudo conectar
+                    con el servidor.
+
+                </div>
+
+            `;
+
+        });
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
