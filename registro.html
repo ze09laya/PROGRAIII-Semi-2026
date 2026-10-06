@@ -5,19 +5,16 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <title>Akari Store - Login</title>
+    <title>Akari Store - Registro</title>
 
-
-    <!-- Bootstrap -->
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-
-    <!-- Font Awesome -->
 
     <link
         rel="stylesheet"
@@ -29,13 +26,9 @@
         :root {
 
             --purple-primary: #6b21a8;
-
             --purple-secondary: #7e22ce;
-
             --purple-gradient-start: #4c1d95;
-
             --purple-gradient-end: #3b0764;
-
             --purple-accent: #a855f7;
 
         }
@@ -72,49 +65,8 @@
 
             background: rgba(255, 255, 255, 0.98);
 
-            backdrop-filter: blur(10px);
-
         }
 
-
- 
-
-        .logo-akari {
-    width: 130px;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 50%;
-    padding: 6px;
-    
-    /* Fondo semi-transparente estilo glassmorphism */
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    
-    /* Borde fino con degradado brillante */
-    border: 2px solid rgba(168, 85, 247, 0.4);
-    
-    /* Sombra elegante con resplandor neón (glow) sutil */
-    box-shadow: 
-        0 10px 25px -5px rgba(107, 33, 168, 0.25),
-        0 0 20px rgba(168, 85, 247, 0.2);
-    
-    /* Transición suave para todos los efectos */
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                box-shadow 0.4s ease, 
-                border-color 0.4s ease;
-}
-
-.logo-akari:hover {
-    /* Elevación sutil y ligera rotación dinámica */
-    transform: translateY(-4px) scale(1.04) rotate(2deg);
-    
-    border-color: var(--purple-accent);
-    
-    /* Intensificación del brillo violáceo */
-    box-shadow: 
-        0 15px 30px -5px rgba(107, 33, 168, 0.35),
-        0 0 30px rgba(168, 85, 247, 0.45);
-}
 
         .title-brand {
 
@@ -129,7 +81,8 @@
 
         .form-control:focus {
 
-            border-color: var(--purple-accent);
+            border-color:
+                var(--purple-accent);
 
             box-shadow:
                 0 0 0 0.25rem
@@ -178,14 +131,7 @@
         }
 
 
-        .btn-purple:active {
-
-            transform: translateY(0);
-
-        }
-
-
-        .register-link {
+        .login-link {
 
             color: var(--purple-primary);
 
@@ -193,18 +139,17 @@
 
             text-decoration: none;
 
-            transition: color 0.2s;
-
         }
 
 
-        .register-link:hover {
+        .login-link:hover {
 
             color: var(--purple-accent);
 
             text-decoration: underline;
 
         }
+
 
     </style>
 
@@ -230,9 +175,9 @@
             <div class="
                 col-12
                 col-sm-10
-                col-md-7
-                col-lg-5
-                col-xl-4
+                col-md-8
+                col-lg-6
+                col-xl-5
             ">
 
 
@@ -242,39 +187,72 @@
                     <div class="card-body p-3">
 
 
-                     
+                        <!-- LOGO -->
 
                         <div class="text-center mb-4">
 
                             <div class="mb-3">
 
                                 <img
-                                    src="/img/logo-akari.jpg"
+                                    src="/logo-akari.png"
                                     alt="Logo Akari Store"
-                                    class="logo-akari img-fluid">
+                                    class="img-fluid"
+                                    style="max-height: 90px;">
 
                             </div>
 
 
                             <h2 class="title-brand mb-1">
 
-                                Akari Store
+                                Crear cuenta
 
                             </h2>
 
 
                             <p class="text-muted small mb-0">
 
-                                Camisas personalizadas
+                                Regístrate en Akari Store
 
                             </p>
 
                         </div>
 
 
-                        <!-- FORMULARIO DE LOGIN -->
+                        <!-- FORMULARIO -->
 
-                        <form id="frmLogin">
+                        <form id="frmRegistro">
+
+
+                            <!-- NOMBRE -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="txtNombre"
+                                    class="form-label fw-medium">
+
+                                    <i class="
+                                        fas fa-user
+                                        me-1
+                                    "></i>
+
+                                    Nombre completo
+
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    class="
+                                        form-control
+                                        form-control-lg
+                                        fs-6
+                                    "
+                                    id="txtNombre"
+                                    placeholder="Ingrese su nombre"
+                                    required>
+
+                            </div>
 
 
                             <!-- USUARIO -->
@@ -283,16 +261,10 @@
 
                                 <label
                                     for="txtUsuario"
-                                    class="
-                                        form-label
-                                        text-dark
-                                        fw-medium
-                                        small
-                                    ">
+                                    class="form-label fw-medium">
 
                                     <i class="
-                                        fas
-                                        fa-user
+                                        fas fa-user-circle
                                         me-1
                                     "></i>
 
@@ -309,7 +281,7 @@
                                         fs-6
                                     "
                                     id="txtUsuario"
-                                    placeholder="Ingrese su usuario"
+                                    placeholder="Cree un usuario"
                                     required>
 
                             </div>
@@ -321,16 +293,10 @@
 
                                 <label
                                     for="txtContrasena"
-                                    class="
-                                        form-label
-                                        text-dark
-                                        fw-medium
-                                        small
-                                    ">
+                                    class="form-label fw-medium">
 
                                     <i class="
-                                        fas
-                                        fa-lock
+                                        fas fa-lock
                                         me-1
                                     "></i>
 
@@ -347,7 +313,39 @@
                                         fs-6
                                     "
                                     id="txtContrasena"
-                                    placeholder="Ingrese su contraseña"
+                                    placeholder="Cree una contraseña"
+                                    required>
+
+                            </div>
+
+
+                            <!-- CONFIRMAR CONTRASEÑA -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="txtConfirmar"
+                                    class="form-label fw-medium">
+
+                                    <i class="
+                                        fas fa-lock
+                                        me-1
+                                    "></i>
+
+                                    Confirmar contraseña
+
+                                </label>
+
+
+                                <input
+                                    type="password"
+                                    class="
+                                        form-control
+                                        form-control-lg
+                                        fs-6
+                                    "
+                                    id="txtConfirmar"
+                                    placeholder="Repita su contraseña"
                                     required>
 
                             </div>
@@ -374,7 +372,12 @@
                                     py-2
                                 ">
 
-                                Iniciar sesión
+                                <i class="
+                                    fas fa-user-plus
+                                    me-2
+                                "></i>
+
+                                Crear cuenta
 
                             </button>
 
@@ -382,7 +385,7 @@
                         </form>
 
 
-                        <!-- REGISTRO -->
+                        <!-- REGRESAR AL LOGIN -->
 
                         <div
                             class="
@@ -393,27 +396,26 @@
                             ">
 
                             <p class="
-                                mb-0
+                                mb-1
                                 text-muted
                                 small
                             ">
 
-                                ¿Necesitas una nueva cuenta?
+                                ¿Ya tienes una cuenta?
 
                             </p>
 
 
                             <a
-                                href="/registro.html"
-                                class="register-link small">
+                                href="/login.html"
+                                class="login-link small">
 
                                 <i class="
-                                    fas
-                                    fa-user-plus
+                                    fas fa-arrow-left
                                     me-1
                                 "></i>
 
-                                Crear un nuevo usuario
+                                Volver al inicio de sesión
 
                             </a>
 
@@ -451,11 +453,17 @@
 
 
         document.getElementById(
-            "frmLogin"
+            "frmRegistro"
         ).onsubmit = function(e) {
 
 
             e.preventDefault();
+
+
+            let nombre =
+                document.getElementById(
+                    "txtNombre"
+                ).value;
 
 
             let usuario =
@@ -470,7 +478,43 @@
                 ).value;
 
 
+            let confirmar =
+                document.getElementById(
+                    "txtConfirmar"
+                ).value;
+
+
+            let mensaje =
+                document.getElementById(
+                    "divMensaje"
+                );
+
+
+            if (contrasena != confirmar) {
+
+                mensaje.innerHTML = `
+
+                    <div class="
+                        alert
+                        alert-danger
+                        py-2
+                        small
+                    ">
+
+                        Las contraseñas no coinciden.
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
             let datos = {
+
+                nombre: nombre,
 
                 usuario: usuario,
 
@@ -479,7 +523,7 @@
             };
 
 
-            fetch("/login", {
+            fetch("/registro", {
 
                 method: "POST",
 
@@ -503,12 +547,6 @@
             .then(data => {
 
 
-                let mensaje =
-                    document.getElementById(
-                        "divMensaje"
-                    );
-
-
                 if (data.estado) {
 
 
@@ -528,24 +566,12 @@
                     `;
 
 
-                    localStorage.setItem(
-                        "usuario",
-                        data.usuario
-                    );
-
-
-                    localStorage.setItem(
-                        "rol",
-                        data.rol
-                    );
-
-
                     setTimeout(function() {
 
                         window.location.href =
-                            "/index.html";
+                            "/login.html";
 
-                    }, 1000);
+                    }, 1500);
 
 
                 } else {
@@ -574,9 +600,7 @@
             .catch(error => {
 
 
-                document.getElementById(
-                    "divMensaje"
-                ).innerHTML = `
+                mensaje.innerHTML = `
 
                     <div class="
                         alert
@@ -594,6 +618,7 @@
 
 
                 console.log(error);
+
 
             });
 
