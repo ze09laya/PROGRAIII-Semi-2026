@@ -1,1514 +1,280 @@
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akari Store | Inicio</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    <title>Akari Store</title>
-
-
-    <!-- BOOTSTRAP -->
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-
-    <!-- FONT AWESOME -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
-
-
-    <style>
-
-        :root {
-
-            --morado:
-                #7e22ce;
-
-            --morado-oscuro:
-                #3b0764;
-
-            --morado-claro:
-                #a855f7;
-
-            --fondo:
-                #f7f3fb;
-        }
-
-
-        body {
-
-            background:
-                var(--fondo);
-
-            font-family:
-                'Segoe UI',
-                Tahoma,
-                Geneva,
-                Verdana,
-                sans-serif;
-        }
-
-
-        /* =================================================
-           NAVBAR
-        ================================================= */
-
-        .navbar-akari {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #3b0764,
-                    #7e22ce
-                );
-
-            box-shadow:
-                0 4px 15px
-                rgba(0,0,0,.2);
-        }
-
-
-        .logo-navbar {
-
-            width: 45px;
-
-            height: 45px;
-
-            object-fit: contain;
-
-            border-radius: 50%;
-
-            background: white;
-
-            padding: 4px;
-        }
-
-
-        .brand {
-
-            font-size: 1.6rem;
-
-            font-weight: 800;
-
-            color: white;
-        }
-
-
-        /* =================================================
-           HERO
-        ================================================= */
-
-        .hero {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #4c1d95,
-                    #7e22ce
-                );
-
-            color: white;
-
-            padding:
-                70px 20px;
-
-            border-radius:
-                0 0 30px 30px;
-        }
-
-
-        .hero h1 {
-
-            font-weight: 800;
-
-            font-size:
-                clamp(
-                    2rem,
-                    5vw,
-                    4rem
-                );
-        }
-
-
-        /* =================================================
-           PRODUCTOS
-        ================================================= */
-
-        .product-card {
-
-            border: none;
-
-            border-radius:
-                18px;
-
-            overflow: hidden;
-
-            background: white;
-
-            box-shadow:
-                0 5px 20px
-                rgba(0,0,0,.08);
-
-            transition:
-                .3s;
-        }
-
-
-        .product-card:hover {
-
-            transform:
-                translateY(-5px);
-
-            box-shadow:
-                0 10px 30px
-                rgba(0,0,0,.15);
-        }
-
-
-        .product-image {
-
-            height: 230px;
-
-            width: 100%;
-
-            object-fit: cover;
-
-            background:
-                #eee;
-        }
-
-
-        .price {
-
-            color:
-                var(--morado);
-
-            font-size:
-                1.3rem;
-
-            font-weight:
-                800;
-        }
-
-
-        /* =================================================
-           BOTONES
-        ================================================= */
-
-        .btn-akari {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7e22ce,
-                    #6b21a8
-                );
-
-            color: white;
-
-            border: none;
-
-            font-weight: 600;
-        }
-
-
-        .btn-akari:hover {
-
-            color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #6b21a8,
-                    #4c1d95
-                );
-        }
-
-
-        /* =================================================
-           MODAL
-        ================================================= */
-
-        .modal-header {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7e22ce,
-                    #4c1d95
-                );
-
-            color: white;
-        }
-
-
-        .preview {
-
-            width: 100%;
-
-            max-height: 220px;
-
-            object-fit: contain;
-
-            border-radius: 12px;
-
-            display: none;
-
-            background:
-                #f3f3f3;
-
-            padding: 5px;
-        }
-
-
-        /* =================================================
-           RESPONSIVE
-        ================================================= */
-
-        @media (max-width: 576px) {
-
-            .hero {
-
-                padding:
-                    45px 15px;
-            }
-
-            .brand {
-
-                font-size:
-                    1.25rem;
-            }
-
-            .product-image {
-
-                height:
-                    200px;
-            }
-
-        }
-
-    </style>
-
+    <link rel="stylesheet" href="/css/estilos.css">
 </head>
-
 
 <body>
 
+   
+    <header class="navbar-akari">
+        <div class="contenedor-nav">
 
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
+            <a href="/index.html" class="logo">
+                <img src="/img/logo-akari.jpg" alt="Logo Akari Store">
+                <span>AKARI <strong>STORE</strong></span>
+            </a>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-akari">
-
-    <div class="container">
-
-        <a
-            class="navbar-brand d-flex align-items-center gap-2"
-            href="/"
-        >
-
-            <!-- Si tienes logo -->
-            <img
-                src="/img/logo-akari.png"
-                class="logo-navbar"
-                alt="Akari Store"
-            >
-
-            <span class="brand">
-                Akari Store
-            </span>
-
-        </a>
-
-
-        <div class="d-flex align-items-center gap-2">
-
-            <span
-                class="text-white d-none d-sm-inline"
-            >
-                <i class="fas fa-user"></i>
-                <span id="usuarioActual">
-                    Usuario
-                </span>
-            </span>
-
-
-            <button
-                class="btn btn-light"
-                onclick="cerrarSesion()"
-            >
-
-                <i class="fas fa-right-from-bracket"></i>
-
-                <span class="d-none d-sm-inline">
-                    Cerrar sesión
-                </span>
-
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Abrir menú" aria-expanded="false">
+                ☰
             </button>
 
+            <nav class="menu" id="menu">
+                <a href="/index.html" class="activo">Inicio</a>
+                <a href="/catalogo.html">Catálogo</a>
+                <a href="/personalizar.html">Personalizar</a>
+                <a href="/pedidos.html">Mis pedidos</a>
+                <button type="button" class="btn-cerrar" id="btnCerrarSesion">
+                    Cerrar sesión
+                </button>
+            </nav>
+
         </div>
+    </header>
 
-    </div>
+    <!-- PORTADA -->
+    <main>
 
-</nav>
+        <section class="portada">
+            <div class="portada-contenido">
+                <span class="etiqueta">TU ESTILO, TU IDENTIDAD</span>
 
-
-
-<!-- =====================================================
-     HERO
-===================================================== -->
-
-<section class="hero">
-
-    <div class="container">
-
-        <div class="row align-items-center">
-
-            <div class="col-md-8">
-
-                <h1>
-                    Personaliza tu estilo
+                <h1>Viste diferente.<br>
+                    <span>Viste Akari.</span>
                 </h1>
 
-                <p class="lead">
-
-                    Camisas, tazas y cuadros metálicos
-                    personalizados para ti.
-
+                <p>
+                    Encuentra camisas urbanas con diseños únicos inspirados
+                    en el anime, la música y tus personajes favoritos.
+                    También puedes crear tu propio diseño.
                 </p>
 
+                <div class="portada-botones">
+                    <a href="/catalogo.html" class="btn-principal">
+                        Explorar catálogo
+                    </a>
+
+                    <a href="/personalizar.html" class="btn-secundario">
+                        Crear mi diseño
+                    </a>
+                </div>
             </div>
 
+            <div class="portada-imagen">
+                <img src="/img/portada-akari.jpg"
+                     alt="Diseños de camisas Akari Store"
+                     onerror="this.style.display='none'">
 
-            <div class="col-md-4 text-center">
+                <div class="texto-imagen">
+                    <span>AKARI STORE</span>
+                    <p>Diseños que hablan por ti.</p>
+                </div>
+            </div>
+        </section>
 
-                <i
-                    class="fas fa-shirt"
-                    style="
-                        font-size:120px;
-                        opacity:.8;
-                    "
-                ></i>
-
+        <!-- CATEGORÍAS -->
+        <section class="seccion categorias">
+            <div class="encabezado-seccion">
+                <span class="subtitulo">ENCUENTRA TU ESTILO</span>
+                <h2>Explora nuestras categorías</h2>
+                <p>Diseños para expresar tu personalidad.</p>
             </div>
 
-        </div>
+            <div class="categorias-grid">
 
-    </div>
+                <a href="/catalogo.html" class="categoria-card">
+                    <div class="categoria-icono">✦</div>
+                    <h3>Anime</h3>
+                    <p>Diseños de tus personajes favoritos.</p>
+                    <span>Ver colección →</span>
+                </a>
 
-</section>
+                <a href="/catalogo.html" class="categoria-card">
+                    <div class="categoria-icono">♫</div>
+                    <h3>Música</h3>
+                    <p>Camisas inspiradas en tus artistas favoritos.</p>
+                    <span>Ver colección →</span>
+                </a>
 
+                <a href="/catalogo.html" class="categoria-card">
+                    <div class="categoria-icono">◈</div>
+                    <h3>Estilo urbano</h3>
+                    <p>Prendas con diseños modernos y originales.</p>
+                    <span>Ver colección →</span>
+                </a>
 
-
-<!-- =====================================================
-     CATÁLOGO
-===================================================== -->
-
-<main class="container py-5">
-
-
-    <div
-        class="
-            d-flex
-            flex-column
-            flex-md-row
-            justify-content-between
-            align-items-md-center
-            gap-3
-            mb-4
-        "
-    >
-
-        <div>
-
-            <h2 class="fw-bold">
-
-                Nuestro catálogo
-
-            </h2>
-
-            <p class="text-muted">
-
-                Encuentra productos personalizados
-                para cada ocasión.
-
-            </p>
-
-        </div>
-
-
-        <button
-            class="btn btn-akari"
-            data-bs-toggle="modal"
-            data-bs-target="#modalProducto"
-        >
-
-            <i class="fas fa-plus"></i>
-
-            Agregar producto
-
-        </button>
-
-    </div>
-
-
-
-    <!-- FILTROS -->
-
-    <div class="row mb-4">
-
-        <div class="col-md-8 mb-2">
-
-            <input
-                type="text"
-                id="txtBuscar"
-                class="form-control"
-                placeholder="Buscar producto..."
-                onkeyup="filtrarProductos()"
-            >
-
-        </div>
-
-
-        <div class="col-md-4">
-
-            <select
-                id="cmbFiltroCategoria"
-                class="form-select"
-                onchange="filtrarProductos()"
-            >
-
-                <option value="">
-                    Todas las categorías
-                </option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- PRODUCTOS -->
-
-    <div
-        id="contenedorProductos"
-        class="row g-4"
-    >
-
-        <div class="col-12 text-center">
-
-            <div class="spinner-border text-primary"></div>
-
-            <p class="mt-2">
-                Cargando productos...
-            </p>
-
-        </div>
-
-    </div>
-
-</main>
-
-
-
-<!-- =====================================================
-     MODAL AGREGAR PRODUCTO
-===================================================== -->
-
-<div
-    class="modal fade"
-    id="modalProducto"
-    tabindex="-1"
->
-
-    <div
-        class="
-            modal-dialog
-            modal-lg
-            modal-dialog-centered
-        "
-    >
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-
-                    <i class="fas fa-box"></i>
-
-                    Agregar producto
-
-                </h5>
-
-
-                <button
-                    type="button"
-                    class="btn-close btn-close-white"
-                    data-bs-dismiss="modal"
-                ></button>
+                <a href="/personalizar.html" class="categoria-card">
+                    <div class="categoria-icono">✎</div>
+                    <h3>Personalizados</h3>
+                    <p>Convierte tus ideas en un diseño único.</p>
+                    <span>Crear diseño →</span>
+                </a>
 
             </div>
+        </section>
 
+        <!-- PRODUCTOS DESTACADOS -->
+        <section class="seccion productos">
+            <div class="encabezado-seccion">
+                <span class="subtitulo">AKARI STORE</span>
+                <h2>Descubre nuestros diseños</h2>
+                <p>Encuentra una camisa que combine contigo.</p>
+            </div>
 
+            <div class="productos-grid">
 
-            <form id="frmProducto">
-
-                <div class="modal-body">
-
-                    <div class="row g-3">
-
-
-                        <!-- NOMBRE -->
-
-                        <div class="col-md-8">
-
-                            <label
-                                class="form-label"
-                            >
-                                Nombre del producto
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="txtNombreProducto"
-                                placeholder="Ej. Camisa personalizada"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- CATEGORÍA -->
-
-                        <div class="col-md-4">
-
-                            <label
-                                class="form-label"
-                            >
-                                Categoría
-                            </label>
-
-                            <select
-                                class="form-select"
-                                id="cmbCategoria"
-                                required
-                            >
-
-                                <option value="">
-                                    Seleccione
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- PRECIO -->
-
-                        <div class="col-md-4">
-
-                            <label
-                                class="form-label"
-                            >
-                                Precio
-                            </label>
-
-                            <div class="input-group">
-
-                                <span class="input-group-text">
-                                    $
-                                </span>
-
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    class="form-control"
-                                    id="txtPrecio"
-                                    required
-                                >
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- EXISTENCIAS -->
-
-                        <div class="col-md-4">
-
-                            <label
-                                class="form-label"
-                            >
-                                Existencias
-                            </label>
-
-                            <input
-                                type="number"
-                                min="0"
-                                class="form-control"
-                                id="txtExistencias"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- IMAGEN -->
-
-                        <div class="col-md-4">
-
-                            <label
-                                class="form-label"
-                            >
-                                Imagen
-                            </label>
-
-                            <input
-                                type="file"
-                                class="form-control"
-                                id="txtImagen"
-                                accept="
-                                    image/png,
-                                    image/jpeg,
-                                    image/webp
-                                "
-                            >
-
-                            <small class="text-muted">
-
-                                JPG, PNG o WEBP
-
-                            </small>
-
-                        </div>
-
-
-                        <!-- PREVIEW -->
-
-                        <div class="col-12">
-
-                            <img
-                                id="previewImagen"
-                                class="preview"
-                                alt="Vista previa"
-                            >
-
-                        </div>
-
-
-                        <!-- DESCRIPCIÓN -->
-
-                        <div class="col-12">
-
-                            <label
-                                class="form-label"
-                            >
-                                Descripción
-                            </label>
-
-                            <textarea
-                                class="form-control"
-                                id="txtDescripcion"
-                                rows="4"
-                                placeholder="
-                                    Describa el producto...
-                                "
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- MENSAJE -->
-
-                        <div
-                            id="mensajeProducto"
-                            class="col-12"
-                        ></div>
-
-
+                <article class="producto-card">
+                    <div class="producto-imagen">
+                        <img src="/img/productos/camisa1.jpg"
+                             alt="Camisa de anime"
+                             onerror="this.style.display='none'">
+                        <span class="producto-etiqueta">ANIME</span>
                     </div>
+                    <div class="producto-info">
+                        <h3>Camisas de anime</h3>
+                        <p>Diseños inspirados en tus series favoritas.</p>
+                        <a href="/catalogo.html">Ver catálogo →</a>
+                    </div>
+                </article>
 
+                <article class="producto-card">
+                    <div class="producto-imagen">
+                        <img src="/img/productos/camisa2.jpg"
+                             alt="Camisa estilo urbano"
+                             onerror="this.style.display='none'">
+                        <span class="producto-etiqueta">URBANO</span>
+                    </div>
+                    <div class="producto-info">
+                        <h3>Camisas oversize</h3>
+                        <p>Comodidad y estilo para tu día a día.</p>
+                        <a href="/catalogo.html">Ver catálogo →</a>
+                    </div>
+                </article>
+
+                <article class="producto-card">
+                    <div class="producto-imagen">
+                        <img src="/img/productos/camisa3.jpg"
+                             alt="Camisa personalizada"
+                             onerror="this.style.display='none'">
+                        <span class="producto-etiqueta">A TU GUSTO</span>
+                    </div>
+                    <div class="producto-info">
+                        <h3>Diseños personalizados</h3>
+                        <p>Personaliza tu camisa como tú quieras.</p>
+                        <a href="/personalizar.html">Personalizar →</a>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="centrar">
+                <a href="/catalogo.html" class="btn-principal">
+                    Ver todos los productos
+                </a>
+            </div>
+        </section>
+
+        <!-- PERSONALIZACIÓN -->
+        <section class="personalizacion">
+            <div class="personalizacion-contenido">
+                <span class="subtitulo">DISEÑA A TU MANERA</span>
+                <h2>Tu idea merece una camisa única.</h2>
+                <p>
+                    Elige tu estilo, comparte tu idea y solicita un diseño
+                    personalizado. Puedes consultar las opciones disponibles
+                    y recibir una propuesta antes de confirmar tu pedido.
+                </p>
+
+                <a href="/personalizar.html" class="btn-blanco">
+                    Personalizar mi camisa
+                </a>
+            </div>
+        </section>
+
+        <!-- INFORMACIÓN -->
+        <section class="seccion beneficios">
+            <div class="encabezado-seccion">
+                <span class="subtitulo">COMPRA CON AKARI</span>
+                <h2>¿Por qué elegirnos?</h2>
+            </div>
+
+            <div class="beneficios-grid">
+                <div class="beneficio">
+                    <span>✦</span>
+                    <h3>Diseños únicos</h3>
+                    <p>Estampados para diferentes gustos y estilos.</p>
                 </div>
 
-
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
-
-                        Cancelar
-
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="btn btn-akari"
-                    >
-
-                        <i class="fas fa-save"></i>
-
-                        Guardar producto
-
-                    </button>
-
+                <div class="beneficio">
+                    <span>✎</span>
+                    <h3>Personalización</h3>
+                    <p>Comparte tus ideas y solicita tu propio diseño.</p>
                 </div>
 
-            </form>
+                <div class="beneficio">
+                    <span>📦</span>
+                    <h3>Envíos nacionales</h3>
+                    <p>Consulta las opciones de entrega disponibles en El Salvador.</p>
+                </div>
+            </div>
+        </section>
 
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer-akari">
+        <div class="footer-contenido">
+            <a href="/index.html" class="footer-logo">AKARI STORE</a>
+            <p>Camisas urbanas | Diseños únicos</p>
+            <p>Pedidos por unidad y docena.</p>
+            <a href="https://wa.me/50360117459" target="_blank"
+               rel="noopener noreferrer" class="enlace-whatsapp">
+                Contactar por WhatsApp: 6011-7459
+            </a>
         </div>
 
-    </div>
-
-</div>
-
-
-
-<!-- BOOTSTRAP JS -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
-
-
-
-<script>
-
-let productos = [];
-
-
-// ========================================================
-// INICIO
-// ========================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        verificarSesion();
-
-        cargarCategorias();
-
-        cargarProductos();
-
-    }
-);
-
-
-// ========================================================
-// SESIÓN
-// ========================================================
-
-function verificarSesion() {
-
-    const usuario =
-        localStorage.getItem("usuario");
-
-    if (usuario) {
-
-        document.getElementById(
-            "usuarioActual"
-        ).textContent = usuario;
-
-    }
-
-}
-
-
-// ========================================================
-// CERRAR SESIÓN
-// ========================================================
-
-function cerrarSesion() {
-
-    localStorage.removeItem("usuario");
-
-    localStorage.removeItem("rol");
-
-    window.location.href =
-        "/login.html";
-
-}
-
-
-// ========================================================
-// CATEGORÍAS
-// ========================================================
-
-function cargarCategorias() {
-
-    fetch("/categorias")
-
-    .then(response =>
-        response.json()
-    )
-
-    .then(data => {
-
-        if (!data.estado) {
-
-            console.error(
-                data.mensaje
-            );
-
-            return;
-
-        }
-
-
-        const select =
-            document.getElementById(
-                "cmbCategoria"
-            );
-
-
-        const filtro =
-            document.getElementById(
-                "cmbFiltroCategoria"
-            );
-
-
-        data.categorias.forEach(
-            categoria => {
-
-                const opcion =
-                    document.createElement(
-                        "option"
-                    );
-
-                opcion.value =
-                    categoria.id_categoria;
-
-                opcion.textContent =
-                    categoria.nombre;
-
-                select.appendChild(
-                    opcion
-                );
-
-
-                const opcionFiltro =
-                    document.createElement(
-                        "option"
-                    );
-
-                opcionFiltro.value =
-                    categoria.id_categoria;
-
-                opcionFiltro.textContent =
-                    categoria.nombre;
-
-                filtro.appendChild(
-                    opcionFiltro
-                );
-
-            }
-        );
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-    });
-
-}
-
-
-// ========================================================
-// PRODUCTOS
-// ========================================================
-
-function cargarProductos() {
-
-    fetch("/productos")
-
-    .then(response =>
-        response.json()
-    )
-
-    .then(data => {
-
-        if (!data.estado) {
-
-            document.getElementById(
-                "contenedorProductos"
-            ).innerHTML = `
-
-                <div class="col-12">
-
-                    <div class="alert alert-danger">
-
-                        ${data.mensaje}
-
-                    </div>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        productos =
-            data.productos;
-
-        mostrarProductos(
-            productos
-        );
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-        document.getElementById(
-            "contenedorProductos"
-        ).innerHTML = `
-
-            <div class="col-12">
-
-                <div class="alert alert-danger">
-
-                    No se pudo conectar
-                    con el servidor.
-
-                </div>
-
-            </div>
-
-        `;
-
-    });
-
-}
-
-
-// ========================================================
-// MOSTRAR PRODUCTOS
-// ========================================================
-
-function mostrarProductos(lista) {
-
-    const contenedor =
-        document.getElementById(
-            "contenedorProductos"
-        );
-
-
-    if (lista.length === 0) {
-
-        contenedor.innerHTML = `
-
-            <div class="col-12 text-center">
-
-                <i
-                    class="fas fa-box-open"
-                    style="font-size:60px"
-                ></i>
-
-                <h4 class="mt-3">
-
-                    No hay productos.
-
-                </h4>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    contenedor.innerHTML = "";
-
-
-    lista.forEach(producto => {
-
-        const imagen =
-            producto.imagen
-            ?
-            producto.imagen
-            :
-            "https://via.placeholder.com/500x400?text=Akari+Store";
-
-
-        const tarjeta = `
-
-            <div class="col-12 col-sm-6 col-lg-4">
-
-                <div class="product-card h-100">
-
-                    <img
-                        src="${imagen}"
-                        class="product-image"
-                        alt="${producto.nombre}"
-                    >
-
-
-                    <div class="p-3">
-
-                        <span class="badge bg-secondary">
-
-                            ${producto.categoria || ""}
-
-                        </span>
-
-
-                        <h5 class="fw-bold mt-2">
-
-                            ${producto.nombre}
-
-                        </h5>
-
-
-                        <p class="text-muted">
-
-                            ${producto.descripcion || ""}
-
-                        </p>
-
-
-                        <div class="
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                        ">
-
-                            <span class="price">
-
-                                $${Number(
-                                    producto.precio
-                                ).toFixed(2)}
-
-                            </span>
-
-
-                            <small class="text-muted">
-
-                                Stock:
-                                ${producto.existencias}
-
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        contenedor.innerHTML +=
-            tarjeta;
-
-    });
-
-}
-
-
-// ========================================================
-// BUSCAR / FILTRAR
-// ========================================================
-
-function filtrarProductos() {
-
-    const texto =
-        document.getElementById(
-            "txtBuscar"
-        ).value.toLowerCase();
-
-
-    const categoria =
-        document.getElementById(
-            "cmbFiltroCategoria"
-        ).value;
-
-
-    const filtrados =
-        productos.filter(
-            producto => {
-
-                const coincideTexto =
-                    producto.nombre
-                        .toLowerCase()
-                        .includes(texto);
-
-
-                const coincideCategoria =
-                    categoria === ""
-                    ||
-                    String(
-                        producto.id_categoria
-                    ) === String(categoria);
-
-
-                return (
-                    coincideTexto
-                    &&
-                    coincideCategoria
-                );
-
-            }
-        );
-
-
-    mostrarProductos(
-        filtrados
-    );
-
-}
-
-
-// ========================================================
-// VISTA PREVIA DE IMAGEN
-// ========================================================
-
-document.getElementById(
-    "txtImagen"
-).addEventListener(
-    "change",
-    function() {
-
-        const archivo =
-            this.files[0];
-
-
-        const preview =
-            document.getElementById(
-                "previewImagen"
-            );
-
-
-        if (!archivo) {
-
-            preview.src = "";
-
-            preview.style.display =
-                "none";
-
-            return;
-
-        }
-
-
-        const lector =
-            new FileReader();
-
-
-        lector.onload =
-            function(evento) {
-
-                preview.src =
-                    evento.target.result;
-
-                preview.style.display =
-                    "block";
-
-            };
-
-
-        lector.readAsDataURL(
-            archivo
-        );
-
-    }
-);
-
-
-// ========================================================
-// GUARDAR PRODUCTO
-// ========================================================
-
-document.getElementById(
-    "frmProducto"
-).addEventListener(
-    "submit",
-    function(e) {
-
-        e.preventDefault();
-
-
-        const nombre =
-            document.getElementById(
-                "txtNombreProducto"
-            ).value;
-
-
-        const categoria =
-            document.getElementById(
-                "cmbCategoria"
-            ).value;
-
-
-        const precio =
-            document.getElementById(
-                "txtPrecio"
-            ).value;
-
-
-        const existencias =
-            document.getElementById(
-                "txtExistencias"
-            ).value;
-
-
-        const descripcion =
-            document.getElementById(
-                "txtDescripcion"
-            ).value;
-
-
-        const imagen =
-            document.getElementById(
-                "txtImagen"
-            ).files[0];
-
-
-        const formData =
-            new FormData();
-
-
-        formData.append(
-            "nombre",
-            nombre
-        );
-
-
-        formData.append(
-            "categoria",
-            categoria
-        );
-
-
-        formData.append(
-            "precio",
-            precio
-        );
-
-
-        formData.append(
-            "existencias",
-            existencias
-        );
-
-
-        formData.append(
-            "descripcion",
-            descripcion
-        );
-
-
-        if (imagen) {
-
-            formData.append(
-                "imagen",
-                imagen
-            );
-
-        }
-
-
-        const boton =
-            this.querySelector(
-                "button[type='submit']"
-            );
-
-
-        boton.disabled =
-            true;
-
-
-        boton.innerHTML = `
-
-            <span
-                class="spinner-border spinner-border-sm"
-            ></span>
-
-            Guardando...
-
-        `;
-
-
-        fetch(
-            "/productos",
-            {
-                method: "POST",
-                body: formData
-            }
-        )
-
-        .then(response =>
-            response.json()
-        )
-
-        .then(data => {
-
-            boton.disabled =
-                false;
-
-
-            boton.innerHTML = `
-
-                <i class="fas fa-save"></i>
-
-                Guardar producto
-
-            `;
-
-
-            const mensaje =
-                document.getElementById(
-                    "mensajeProducto"
-                );
-
-
-            if (data.estado) {
-
-                mensaje.innerHTML = `
-
-                    <div class="
-                        alert
-                        alert-success
-                    ">
-
-                        <i class="
-                            fas
-                            fa-check-circle
-                        "></i>
-
-                        ${data.mensaje}
-
-                    </div>
-
-                `;
-
-
-                document.getElementById(
-                    "frmProducto"
-                ).reset();
-
-
-                document.getElementById(
-                    "previewImagen"
-                ).style.display =
-                    "none";
-
-
-                cargarProductos();
-
-
-                setTimeout(
-                    function() {
-
-                        const modal =
-                            bootstrap.Modal
-                            .getInstance(
-                                document.getElementById(
-                                    "modalProducto"
-                                )
-                            );
-
-                        if (modal) {
-
-                            modal.hide();
-
-                        }
-
-                    },
-                    1000
-                );
-
-
-            } else {
-
-                mensaje.innerHTML = `
-
-                    <div class="
-                        alert
-                        alert-danger
-                    ">
-
-                        ${data.mensaje}
-
-                    </div>
-
-                `;
-
-            }
-
-        })
-
-        .catch(error => {
-
-            console.error(error);
-
-
-            boton.disabled =
-                false;
-
-
-            boton.innerHTML = `
-
-                <i class="fas fa-save"></i>
-
-                Guardar producto
-
-            `;
-
-
-            document.getElementById(
-                "mensajeProducto"
-            ).innerHTML = `
-
-                <div class="
-                    alert
-                    alert-danger
-                ">
-
-                    No se pudo conectar
-                    con el servidor.
-
-                </div>
-
-            `;
-
+        <div class="footer-final">
+            © 2026 Akari Store. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Abrir y cerrar el menú en dispositivos móviles
+        const menuToggle = document.getElementById("menuToggle");
+        const menu = document.getElementById("menu");
+
+        menuToggle.addEventListener("click", function () {
+            menu.classList.toggle("menu-abierto");
+
+            const abierto = menu.classList.contains("menu-abierto");
+            menuToggle.setAttribute("aria-expanded", abierto);
+            menuToggle.textContent = abierto ? "✕" : "☰";
         });
 
-    }
-);
+        // Cerrar sesión
+        document.getElementById("btnCerrarSesion")
+            .addEventListener("click", function () {
 
-</script>
+                const confirmar = confirm("¿Deseas cerrar sesión?");
 
+                if (confirmar) {
+                    localStorage.removeItem("usuario");
+                    localStorage.removeItem("nombre");
+                    localStorage.removeItem("rol");
+
+                    window.location.href = "/login.html";
+                }
+            });
+    </script>
 
 </body>
-
 </html>

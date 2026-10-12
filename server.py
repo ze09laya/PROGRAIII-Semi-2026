@@ -637,6 +637,75 @@ class MiServidor(SimpleHTTPRequestHandler):
         # LOGIN
         # ====================================================
 
+
+        # ====================================================
+        # REGISTRO DE USUARIOS
+        # ====================================================
+
+        if url.path == "/registro":
+
+            try:
+                longitud = int(
+                    self.headers.get("Content-Length", 0)
+                )
+
+                cuerpo = self.rfile.read(longitud)
+                datos = json.loads(cuerpo.decode("utf-8"))
+
+                nombre = datos.get("nombre", "").strip()
+                usuario = datos.get("usuario", "").strip()
+                contrasena = datos.get("contrasena", "")
+
+                # Validar campos
+                if not nombre or not usuario or not contrasena:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "Complete todos los campos."
+                        },
+                        400
+                    )
+                    return
+
+                # Registrar usando el CRUD
+                from crud_usuarios import crud_usuarios
+
+                crud = crud_usuarios()
+
+                estado, mensaje = crud.registrar(
+                    nombre,
+                    usuario,
+                    contrasena
+                )
+
+                responder_json(
+                    self,
+                    {
+                        "estado": estado,
+                        "mensaje": mensaje
+                    },
+                    200 if estado else 400
+                )
+
+            except Exception as error:
+                print("ERROR REGISTRO:", error)
+
+                responder_json(
+                    self,
+                    {
+                        "estado": False,
+                        "mensaje": "Error al registrar el usuario."
+                    },
+                    500
+                )
+
+            return
+
+
+
+
+
         if url.path == "/login":
 
             try:
