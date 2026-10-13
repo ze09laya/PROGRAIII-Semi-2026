@@ -1,10 +1,9 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 import mysql.connector
 import json
 import os
 import uuid
-import mimetypes
 
 
 # ============================================================
@@ -20,13 +19,10 @@ DB_CONFIG = {
     "database": "akari_store"
 }
 
-
-# ============================================================
-# CARPETA PARA IMÁGENES
-# ============================================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CARPETA_IMAGENES = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
+    BASE_DIR,
     "img",
     "productos"
 )
@@ -39,89 +35,80 @@ os.makedirs(CARPETA_IMAGENES, exist_ok=True)
 # ============================================================
 
 def conectar_bd():
-
-    return mysql.connector.connect(
-        host=DB_CONFIG["host"],
-        user=DB_CONFIG["user"],
-        password=DB_CONFIG["password"],
-        database=DB_CONFIG["database"]
-    )
+    return mysql.connector.connect(**DB_CONFIG)
 
 
 # ============================================================
-# RESPUESTA JSON
+# RESPUESTAS JSON
 # ============================================================
 
 def responder_json(handler, datos, codigo=200):
-
     respuesta = json.dumps(
         datos,
-        ensure_ascii=False
+        ensure_ascii=False,
+        default=str
     ).encode("utf-8")
 
     handler.send_response(codigo)
-
     handler.send_header(
         "Content-Type",
         "application/json; charset=utf-8"
     )
-
-    handler.send_header(
-        "Content-Length",
-        str(len(respuesta))
-    )
-
+    handler.send_header("Content-Length", str(len(respuesta)))
+    handler.send_header("Cache-Control", "no-store")
     handler.end_headers()
-
     handler.wfile.write(respuesta)
 
 
 # ============================================================
-# LEER MULTIPART/FORM-DATA
+# LEER JSON
+# ============================================================
+
+def leer_json(handler):
+    longitud = int(handler.headers.get("Content-Length", 0))
+
+    if longitud <= 0:
+        return {}
+
+    cuerpo = handler.rfile.read(longitud)
+    return json.loads(cuerpo.decode("utf-8"))
+
+
+# ============================================================
+# LEER FORMULARIOS MULTIPART
 # ============================================================
 
 def leer_multipart(handler):
-
     content_type = handler.headers.get("Content-Type", "")
 
     if "multipart/form-data" not in content_type:
-
         return None
 
-    # Obtener boundary
-    partes = content_type.split("boundary=")
+    partes_boundary = content_type.split("boundary=", 1)
 
-    if len(partes) < 2:
+    if len(partes_boundary) != 2:
         return None
 
-    boundary = partes[1].encode("utf-8")
+    boundary = partes_boundary[1].strip().strip('"').encode("utf-8")
+    longitud = int(handler.headers.get("Content-Length", 0))
 
-    content_length = int(
-        handler.headers.get("Content-Length", 0)
-    )
+    if longitud <= 0:
+        return None
 
-    cuerpo = handler.rfile.read(content_length)
-
-    limite = b"--" + boundary
-
-    partes = cuerpo.split(limite)
-
+    cuerpo = handler.rfile.read(longitud)
     datos = {}
 
-    for parte in partes:
-
-        if not parte or parte in (b"--\r\n", b"--"):
+    for parte in cuerpo.split(b"--" + boundary):
+        if not parte or parte.strip(b"\r\n-") == b"":
             continue
+
+        parte = parte.strip(b"\r\n")
 
         if b"\r\n\r\n" not in parte:
             continue
 
-        encabezados, contenido = parte.split(
-            b"\r\n\r\n",
-            1
-        )
-
-        contenido = contenido.rstrip(b"\r\n-")
+        encabezados, contenido = parte.split(b"\r\n\r\n", 1)
+        contenido = contenido.rstrip(b"\r\n")
 
         encabezados_texto = encabezados.decode(
             "utf-8",
@@ -132,47 +119,75 @@ def leer_multipart(handler):
         nombre_archivo = None
 
         for linea in encabezados_texto.split("\r\n"):
-
-            if "Content-Disposition" in linea:
-
+            if "Content-Disposition:" in linea:
                 if 'name="' in linea:
-
-                    nombre = linea.split(
-                        'name="'
-                    )[1].split('"')[0]
+                    nombre = linea.split('name="', 1)[1].split('"', 1)[0]
 
                 if 'filename="' in linea:
-
                     nombre_archivo = linea.split(
-                        'filename="'
-                    )[1].split('"')[0]
+                        'filename="', 1
+                    )[1].split('"', 1)[0]
 
         if not nombre:
             continue
 
-        # ----------------------------------------------------
-        # ARCHIVO
-        # ----------------------------------------------------
-
-        if nombre_archivo:
-
+        if nombre_archivo is not None:
             datos[nombre] = {
                 "filename": nombre_archivo,
                 "data": contenido
             }
-
-        # ----------------------------------------------------
-        # CAMPO NORMAL
-        # ----------------------------------------------------
-
         else:
-
             datos[nombre] = contenido.decode(
                 "utf-8",
-                errors="ignore"
+                errors="replace"
             )
 
     return datos
+
+
+# ============================================================
+# GUARDAR IMAGEN
+# ============================================================
+
+def guardar_imagen(imagen):
+    if not imagen or not imagen.get("filename"):
+        return None
+
+    nombre_original = os.path.basename(imagen["filename"])
+    extension = os.path.splitext(nombre_original)[1].lower()
+
+    extensiones_permitidas = (
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    )
+
+    if extension not in extensiones_permitidas:
+        raise ValueError(
+            "Formato de imagen no permitido. Use JPG, JPEG, PNG o WEBP."
+        )
+
+    contenido = imagen.get("data", b"")
+
+    if not contenido:
+        raise ValueError("La imagen está vacía.")
+
+    # Límite de 5 MB
+    if len(contenido) > 5 * 1024 * 1024:
+        raise ValueError("La imagen no puede superar los 5 MB.")
+
+    nombre_archivo = str(uuid.uuid4()) + extension
+
+    ruta = os.path.join(
+        CARPETA_IMAGENES,
+        nombre_archivo
+    )
+
+    with open(ruta, "wb") as archivo:
+        archivo.write(contenido)
+
+    return "/img/productos/" + nombre_archivo, ruta
 
 
 # ============================================================
@@ -181,103 +196,35 @@ def leer_multipart(handler):
 
 class MiServidor(SimpleHTTPRequestHandler):
 
-
-    # ========================================================
+    # --------------------------------------------------------
     # GET
-    # ========================================================
+    # --------------------------------------------------------
 
     def do_GET(self):
-
         url = urlparse(self.path)
 
-        # ----------------------------------------------------
-        # OBTENER CATEGORÍAS
-        # ----------------------------------------------------
-
-        if url.path == "/categorias":
-
-            try:
-
-                conexion = conectar_bd()
-
-                cursor = conexion.cursor(
-                    dictionary=True
-                )
-
-                cursor.execute("""
-                    SELECT
-                        id_categoria,
-                        nombre
-                    FROM categorias
-                    WHERE activo = TRUE
-                    ORDER BY nombre
-                """)
-
-                categorias = cursor.fetchall()
-
-                cursor.close()
-                conexion.close()
-
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "categorias": categorias
-                    }
-                )
-
-            except Exception as error:
-
-                print("ERROR CATEGORIAS:", error)
-
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": str(error)
-                    },
-                    500
-                )
-
-            return
-
-
-        # ----------------------------------------------------
-        # OBTENER PRODUCTOS
-        # ----------------------------------------------------
-
+        # Obtener productos de MySQL
         if url.path == "/productos":
+            conexion = None
+            cursor = None
 
             try:
-
                 conexion = conectar_bd()
-
-                cursor = conexion.cursor(
-                    dictionary=True
-                )
+                cursor = conexion.cursor(dictionary=True)
 
                 cursor.execute("""
                     SELECT
-                        p.id_producto,
-                        p.nombre,
-                        p.id_categoria,
-                        c.nombre AS categoria,
-                        p.precio,
-                        p.existencias,
-                        p.imagen,
-                        p.descripcion,
-                        p.activo
-                    FROM productos p
-                    LEFT JOIN categorias c
-                        ON p.id_categoria = c.id_categoria
-                    WHERE p.activo = TRUE
-                    ORDER BY p.id_producto DESC
+                        id_producto,
+                        nombre,
+                        descripcion,
+                        precio,
+                        imagen,
+                        activo
+                    FROM productos
+                    ORDER BY id_producto DESC
                 """)
 
                 productos = cursor.fetchall()
-
-                cursor.close()
-                conexion.close()
 
                 responder_json(
                     self,
@@ -288,375 +235,50 @@ class MiServidor(SimpleHTTPRequestHandler):
                 )
 
             except Exception as error:
-
                 print("ERROR PRODUCTOS:", error)
 
                 responder_json(
                     self,
                     {
                         "estado": False,
-                        "mensaje": str(error)
+                        "mensaje": "No se pudieron cargar los productos."
                     },
                     500
                 )
 
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
             return
 
-
-        # ----------------------------------------------------
-        # PÁGINA PRINCIPAL
-        # ----------------------------------------------------
-
+        # Página principal
         if url.path == "/":
-
             self.path = "/index.html"
 
         return SimpleHTTPRequestHandler.do_GET(self)
 
-
-    # ========================================================
+    # --------------------------------------------------------
     # POST
-    # ========================================================
+    # --------------------------------------------------------
 
     def do_POST(self):
-
         url = urlparse(self.path)
-
-
-        # ====================================================
-        # AGREGAR PRODUCTO
-        # ====================================================
-
-        if url.path == "/productos":
-
-            try:
-
-                datos = leer_multipart(self)
-
-                if datos is None:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "Los datos no fueron enviados correctamente."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                nombre = datos.get(
-                    "nombre",
-                    ""
-                ).strip()
-
-                id_categoria = datos.get(
-                    "categoria",
-                    ""
-                )
-
-                precio = datos.get(
-                    "precio",
-                    "0"
-                )
-
-                existencias = datos.get(
-                    "existencias",
-                    "0"
-                )
-
-                descripcion = datos.get(
-                    "descripcion",
-                    ""
-                ).strip()
-
-
-                # ------------------------------------------------
-                # VALIDACIONES
-                # ------------------------------------------------
-
-                if not nombre:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "Ingrese el nombre del producto."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                if not id_categoria:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "Seleccione una categoría."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                try:
-
-                    precio = float(precio)
-                    existencias = int(existencias)
-
-                except:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "Precio o existencias inválidos."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                if precio < 0:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "El precio no puede ser negativo."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                if existencias < 0:
-
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje":
-                            "Las existencias no pueden ser negativas."
-                        },
-                        400
-                    )
-
-                    return
-
-
-                # =================================================
-                # GUARDAR IMAGEN
-                # =================================================
-
-                imagen = datos.get("imagen")
-
-                ruta_imagen = ""
-
-
-                if imagen:
-
-                    nombre_original = imagen["filename"]
-
-                    extension = os.path.splitext(
-                        nombre_original
-                    )[1].lower()
-
-
-                    extensiones_permitidas = [
-                        ".jpg",
-                        ".jpeg",
-                        ".png",
-                        ".webp"
-                    ]
-
-
-                    if extension not in extensiones_permitidas:
-
-                        responder_json(
-                            self,
-                            {
-                                "estado": False,
-                                "mensaje":
-                                "Formato de imagen no permitido. "
-                                "Use JPG, JPEG, PNG o WEBP."
-                            },
-                            400
-                        )
-
-                        return
-
-
-                    # Nombre único para evitar que
-                    # dos imágenes tengan el mismo nombre
-
-                    nombre_archivo = (
-                        str(uuid.uuid4())
-                        + extension
-                    )
-
-
-                    ruta_archivo = os.path.join(
-                        CARPETA_IMAGENES,
-                        nombre_archivo
-                    )
-
-
-                    with open(
-                        ruta_archivo,
-                        "wb"
-                    ) as archivo:
-
-                        archivo.write(
-                            imagen["data"]
-                        )
-
-
-                    ruta_imagen = (
-                        "/img/productos/"
-                        + nombre_archivo
-                    )
-
-
-                # =================================================
-                # GUARDAR PRODUCTO EN MYSQL
-                # =================================================
-
-                conexion = conectar_bd()
-
-                cursor = conexion.cursor()
-
-
-                sql = """
-                    INSERT INTO productos
-                    (
-                        id_categoria,
-                        nombre,
-                        precio,
-                        existencias,
-                        imagen,
-                        descripcion,
-                        activo
-                    )
-                    VALUES
-                    (
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        TRUE
-                    )
-                """
-
-
-                valores = (
-                    int(id_categoria),
-                    nombre,
-                    precio,
-                    existencias,
-                    ruta_imagen,
-                    descripcion
-                )
-
-
-                cursor.execute(
-                    sql,
-                    valores
-                )
-
-
-                conexion.commit()
-
-
-                id_producto = cursor.lastrowid
-
-
-                cursor.close()
-                conexion.close()
-
-
-                print(
-                    "Producto guardado:",
-                    id_producto
-                )
-
-
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "mensaje":
-                        "Producto agregado correctamente.",
-                        "id_producto":
-                        id_producto,
-                        "imagen":
-                        ruta_imagen
-                    }
-                )
-
-                return
-
-
-            except Exception as error:
-
-                print(
-                    "ERROR AL GUARDAR PRODUCTO:",
-                    error
-                )
-
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje":
-                        "Error al guardar el producto: "
-                        + str(error)
-                    },
-                    500
-                )
-
-                return
-
-
-        # ====================================================
-        # LOGIN
-        # ====================================================
-
 
         # ====================================================
         # REGISTRO DE USUARIOS
         # ====================================================
 
         if url.path == "/registro":
-
             try:
-                longitud = int(
-                    self.headers.get("Content-Length", 0)
-                )
+                datos = leer_json(self)
 
-                cuerpo = self.rfile.read(longitud)
-                datos = json.loads(cuerpo.decode("utf-8"))
+                nombre = str(datos.get("nombre", "")).strip()
+                usuario = str(datos.get("usuario", "")).strip()
+                contrasena = str(datos.get("contrasena", ""))
 
-                nombre = datos.get("nombre", "").strip()
-                usuario = datos.get("usuario", "").strip()
-                contrasena = datos.get("contrasena", "")
-
-                # Validar campos
                 if not nombre or not usuario or not contrasena:
                     responder_json(
                         self,
@@ -668,11 +290,9 @@ class MiServidor(SimpleHTTPRequestHandler):
                     )
                     return
 
-                # Registrar usando el CRUD
                 from crud_usuarios import crud_usuarios
 
                 crud = crud_usuarios()
-
                 estado, mensaje = crud.registrar(
                     nombre,
                     usuario,
@@ -682,7 +302,7 @@ class MiServidor(SimpleHTTPRequestHandler):
                 responder_json(
                     self,
                     {
-                        "estado": estado,
+                        "estado": bool(estado),
                         "mensaje": mensaje
                     },
                     200 if estado else 400
@@ -695,51 +315,29 @@ class MiServidor(SimpleHTTPRequestHandler):
                     self,
                     {
                         "estado": False,
-                        "mensaje": "Error al registrar el usuario."
+                        "mensaje": "No se pudo registrar el usuario."
                     },
                     500
                 )
 
             return
 
-
-
-
+        # ====================================================
+        # INICIO DE SESIÓN
+        # ====================================================
 
         if url.path == "/login":
+            conexion = None
+            cursor = None
 
             try:
+                datos = leer_json(self)
 
-                longitud = int(
-                    self.headers.get(
-                        "Content-Length",
-                        0
-                    )
-                )
-
-                cuerpo = self.rfile.read(longitud)
-
-                datos = json.loads(
-                    cuerpo.decode("utf-8")
-                )
-
-                usuario = datos.get(
-                    "usuario",
-                    ""
-                )
-
-                contrasena = datos.get(
-                    "contrasena",
-                    ""
-                )
-
+                usuario = str(datos.get("usuario", "")).strip()
+                contrasena = str(datos.get("contrasena", ""))
 
                 conexion = conectar_bd()
-
-                cursor = conexion.cursor(
-                    dictionary=True
-                )
-
+                cursor = conexion.cursor(dictionary=True)
 
                 cursor.execute("""
                     SELECT
@@ -756,67 +354,425 @@ class MiServidor(SimpleHTTPRequestHandler):
                         u.usuario = %s
                         AND u.contrasena = %s
                         AND u.activo = TRUE
-                """, (
-                    usuario,
-                    contrasena
-                ))
-
+                """, (usuario, contrasena))
 
                 resultado = cursor.fetchone()
 
-
-                cursor.close()
-                conexion.close()
-
-
                 if resultado:
-
                     responder_json(
                         self,
                         {
                             "estado": True,
-                            "mensaje":
-                            "Bienvenido a Akari Store.",
-                            "usuario":
-                            resultado["usuario"],
-                            "nombre":
-                            resultado["nombre"],
-                            "rol":
-                            resultado["rol"]
+                            "mensaje": "Bienvenido a Akari Store.",
+                            "id_usuario": resultado["id_usuario"],
+                            "usuario": resultado["usuario"],
+                            "nombre": resultado["nombre"],
+                            "id_rol": resultado["id_rol"],
+                            "rol": resultado["rol"]
                         }
                     )
-
                 else:
-
                     responder_json(
                         self,
                         {
                             "estado": False,
-                            "mensaje":
-                            "Usuario o contraseña incorrectos."
-                        }
+                            "mensaje": "Usuario o contraseña incorrectos."
+                        },
+                        401
                     )
 
             except Exception as error:
-
-                print(
-                    "ERROR LOGIN:",
-                    error
-                )
+                print("ERROR LOGIN:", error)
 
                 responder_json(
                     self,
                     {
                         "estado": False,
-                        "mensaje":
-                        "Error del servidor: "
-                        + str(error)
+                        "mensaje": "Ocurrió un error al iniciar sesión."
                     },
                     500
                 )
 
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
             return
 
+        # ====================================================
+        # ELIMINAR PRODUCTO (Ruta aislada que recibe JSON puro)
+        # ====================================================
+
+        if url.path == "/productos/eliminar":
+            conexion = None
+            cursor = None
+
+            try:
+                datos = leer_json(self)
+
+                try:
+                    id_producto = int(datos.get("id_producto", 0))
+                except (ValueError, TypeError):
+                    id_producto = 0
+
+                if id_producto <= 0:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "ID de producto no válido."
+                        },
+                        400
+                    )
+                    return
+
+                conexion = conectar_bd()
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    "SELECT imagen FROM productos WHERE id_producto = %s",
+                    (id_producto,)
+                )
+                producto = cursor.fetchone()
+
+                if producto is None:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "El producto no existe."
+                        },
+                        404
+                    )
+                    return
+
+                cursor.execute(
+                    "DELETE FROM productos WHERE id_producto = %s",
+                    (id_producto,)
+                )
+
+                conexion.commit()
+
+                # Eliminar imagen local si existe
+                imagen = producto[0]
+
+                if imagen:
+                    nombre_imagen = os.path.basename(imagen)
+                    ruta_imagen = os.path.join(
+                        CARPETA_IMAGENES,
+                        nombre_imagen
+                    )
+
+                    if os.path.isfile(ruta_imagen):
+                        try:
+                            os.remove(ruta_imagen)
+                        except OSError as error:
+                            print("Error al eliminar imagen:", error)
+
+                responder_json(
+                    self,
+                    {
+                        "estado": True,
+                        "mensaje": "Producto eliminado correctamente."
+                    }
+                )
+
+            except Exception as error:
+                if conexion:
+                    conexion.rollback()
+                print("ERROR ELIMINAR:", error)
+                responder_json(
+                    self,
+                    {
+                        "estado": False,
+                        "mensaje": "No se pudo eliminar el producto."
+                    },
+                    500
+                )
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
+            return
+
+        # ====================================================
+        # CAMBIAR ESTADO DE PRODUCTOS
+        # ====================================================
+
+        if url.path == "/productos/estado":
+            conexion = None
+            cursor = None
+
+            try:
+                datos = leer_json(self)
+
+                id_producto = int(datos.get("id_producto", 0))
+                activo = int(datos.get("activo", -1))
+
+                if id_producto <= 0 or activo not in (0, 1):
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "Los datos enviados no son válidos."
+                        },
+                        400
+                    )
+                    return
+
+                conexion = conectar_bd()
+                cursor = conexion.cursor()
+
+                cursor.execute("""
+                    UPDATE productos
+                    SET activo = %s
+                    WHERE id_producto = %s
+                """, (activo, id_producto))
+
+                if cursor.rowcount == 0:
+                    conexion.rollback()
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "Producto no encontrado o sin cambios."
+                        },
+                        404
+                    )
+                    return
+
+                conexion.commit()
+
+                responder_json(
+                    self,
+                    {
+                        "estado": True,
+                        "mensaje": "Estado actualizado correctamente."
+                    }
+                )
+
+            except Exception as error:
+                if conexion:
+                    conexion.rollback()
+                print("ERROR ESTADO:", error)
+                responder_json(
+                    self,
+                    {
+                        "estado": False,
+                        "mensaje": "Ocurrió un error al cambiar el estado."
+                    },
+                    500
+                )
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
+            return
+
+        # ====================================================
+        # AGREGAR O EDITAR PRODUCTOS (Multipart / Form-data)
+        # ====================================================
+
+        if url.path in ("/productos", "/productos/editar"):
+            conexion = None
+            cursor = None
+            ruta_archivo_nuevo = None
+
+            try:
+                datos = leer_multipart(self)
+
+                if datos is None:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "El formulario debe enviarse como multipart/form-data."
+                        },
+                        400
+                    )
+                    return
+
+                nombre = datos.get("nombre", "").strip()
+                descripcion = datos.get("descripcion", "").strip()
+                precio_texto = datos.get("precio", "")
+                activo_texto = datos.get("activo", "1")
+                id_producto_texto = datos.get("id_producto", "0")
+
+                if not nombre:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "Ingrese el nombre del producto."
+                        },
+                        400
+                    )
+                    return
+
+                try:
+                    precio = float(precio_texto)
+                    activo = int(activo_texto)
+                    id_producto = int(id_producto_texto or 0)
+                except (ValueError, TypeError):
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "El precio o el identificador no son válidos."
+                        },
+                        400
+                    )
+                    return
+
+                if precio <= 0 or activo not in (0, 1):
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "El precio debe ser mayor que cero."
+                        },
+                        400
+                    )
+                    return
+
+                if url.path == "/productos/editar" and id_producto <= 0:
+                    responder_json(
+                        self,
+                        {
+                            "estado": False,
+                            "mensaje": "Falta el ID del producto."
+                        },
+                        400
+                    )
+                    return
+
+                imagen = datos.get("imagen")
+                ruta_imagen = None
+
+                if imagen and imagen.get("filename"):
+                    resultado_imagen = guardar_imagen(imagen)
+                    ruta_imagen, ruta_archivo_nuevo = resultado_imagen
+
+                conexion = conectar_bd()
+                cursor = conexion.cursor(dictionary=True)
+
+                if url.path == "/productos":
+                    if ruta_imagen is None:
+                        ruta_imagen = ""
+
+                    cursor.execute("""
+                        INSERT INTO productos
+                            (nombre, descripcion, precio, imagen, activo)
+                        VALUES
+                            (%s, %s, %s, %s, %s)
+                    """, (
+                        nombre,
+                        descripcion,
+                        precio,
+                        ruta_imagen,
+                        activo
+                    ))
+
+                    mensaje = "Producto agregado correctamente."
+
+                else:
+                    cursor.execute("""
+                        SELECT imagen
+                        FROM productos
+                        WHERE id_producto = %s
+                    """, (id_producto,))
+
+                    producto = cursor.fetchone()
+
+                    if not producto:
+                        conexion.rollback()
+                        responder_json(
+                            self,
+                            {
+                                "estado": False,
+                                "mensaje": "El producto no existe."
+                            },
+                            404
+                        )
+                        return
+
+                    if ruta_imagen is None:
+                        ruta_imagen = producto["imagen"] or ""
+
+                    cursor.execute("""
+                        UPDATE productos
+                        SET
+                            nombre = %s,
+                            descripcion = %s,
+                            precio = %s,
+                            imagen = %s,
+                            activo = %s
+                        WHERE id_producto = %s
+                    """, (
+                        nombre,
+                        descripcion,
+                        precio,
+                        ruta_imagen,
+                        activo,
+                        id_producto
+                    ))
+
+                    mensaje = "Producto actualizado correctamente."
+
+                conexion.commit()
+
+                responder_json(
+                    self,
+                    {
+                        "estado": True,
+                        "mensaje": mensaje
+                    }
+                )
+
+            except ValueError as error:
+                responder_json(
+                    self,
+                    {
+                        "estado": False,
+                        "mensaje": str(error)
+                    },
+                    400
+                )
+
+            except Exception as error:
+                if conexion:
+                    conexion.rollback()
+
+                if ruta_archivo_nuevo and os.path.exists(ruta_archivo_nuevo):
+                    try:
+                        os.remove(ruta_archivo_nuevo)
+                    except OSError:
+                        pass
+
+                print("ERROR PRODUCTOS:", error)
+
+                responder_json(
+                    self,
+                    {
+                        "estado": False,
+                        "mensaje": "Ocurrió un error al procesar el producto."
+                    },
+                    500
+                )
+
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
+            return
 
         # ====================================================
         # RUTA NO ENCONTRADA
@@ -836,34 +792,21 @@ class MiServidor(SimpleHTTPRequestHandler):
 # INICIAR SERVIDOR
 # ============================================================
 
-print(
-    "=========================================="
-)
+if __name__ == "__main__":
+    print("==========================================")
+    print("     AKARI STORE - SERVIDOR")
+    print("==========================================")
+    print("Servidor corriendo en:")
+    print("http://localhost:" + str(PORT))
+    print("==========================================")
 
-print(
-    "       AKARI STORE - SERVIDOR"
-)
+    servidor = HTTPServer(
+        ("localhost", PORT),
+        MiServidor
+    )
 
-print(
-    "=========================================="
-)
-
-print(
-    "Servidor corriendo en:"
-)
-
-print(
-    "http://localhost:" + str(PORT)
-)
-
-print(
-    "=========================================="
-)
-
-
-servidor = HTTPServer(
-    ("localhost", PORT),
-    MiServidor
-)
-
-servidor.serve_forever()
+    try:
+        servidor.serve_forever()
+    except KeyboardInterrupt:
+        print("\nServidor detenido.")
+        servidor.server_close()

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | Akari Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catalogo.css">
+
+
+</head>
+
+<nav class="navbar navbar-akari navbar-dark">
+    <div class="container py-2 d-flex justify-content-between align-items-center">
+        <a href="/index.html" class="d-flex align-items-center gap-3 text-decoration-none">
+            <!-- REVISA QUE AQUÍ ESTÉ ESCRITA LA CLASE logo-akari -->
+            <img src="/img/logo-akari.jpg" class="logo-akari" alt="Logo Akari">
+            <span class="fw-bold fs-4 text-dark">AKARI <span style="color: var(--purple-primary);">STORE</span></span>
+        </a>
+        
+        <div class="d-flex align-items-center gap-3">
+            <span id="nombreUsuario" class="text-secondary small"></span>
+            <a href="/index.html">Inicio</a>
+            <button id="btnCerrar" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
+        </div>
+    </div>
+</nav>
+
+
+
+
+<main class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="titulo">Nuestro catálogo</h1>
+        <p class="text-secondary">Camisas urbanas | Diseños únicos</p>
+    </div>
+
+    <div id="panelAdministrador" class="mb-4 text-center" style="display:none">
+        <button id="btnNuevo" class="btn btn-akari">
+            + Agregar producto
+        </button>
+    </div>
+
+    <section id="formularioProducto" class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h4 id="tituloFormulario" class="mb-3">Agregar producto</h4>
+
+            <form id="formProducto" enctype="multipart/form-data">
+                <input type="hidden" id="idProducto" name="id_producto">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre del producto</label>
+                        <input id="nombre" name="nombre" class="form-control"
+                               maxlength="150" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="precio" class="form-label">Precio ($)</label>
+                        <input id="precio" name="precio" type="number"
+                               min="0.01" step="0.01" class="form-control" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea id="descripcion" name="descripcion"
+                                  class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="imagen" class="form-label">Imagen del producto</label>
+                        <input id="imagen" name="imagen" type="file"
+                               class="form-control" accept="image/*">
+                        <small class="text-secondary">
+                            Al editar, puedes dejar este campo vacío para conservar la imagen.
+                        </small>
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input id="activo" name="activo" type="checkbox"
+                                   class="form-check-input" checked>
+                            <label for="activo" class="form-check-label">
+                                Producto activo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-akari" id="btnGuardar">
+                        Guardar producto
+                    </button>
+                    <button type="button" id="btnCancelar" class="btn btn-secondary">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <div id="mensaje" class="alert d-none" role="alert"></div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-8">
+            <input id="busqueda" type="search" class="form-control"
+                   placeholder="Buscar productos por nombre...">
+        </div>
+        <div class="col-md-4">
+            <select id="filtroEstado" class="form-select">
+                <option value="activos">Productos disponibles</option>
+                <option value="todos">Todos los productos</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="cargando" class="text-center py-4">Cargando productos...</div>
+    <div id="catalogo" class="row g-4"></div>
+    <div id="sinProductos" class="text-center text-secondary py-4" hidden>
+        No se encontraron productos.
+    </div>
+</main>
+
+<footer class="text-center py-4 text-secondary">
+    Akari Store · Camisas urbanas y diseños personalizados
+</footer>
+
+<script>
+const rol = (localStorage.getItem("rol") || "").trim().toLowerCase();
+const nombre = localStorage.getItem("nombre") ||
+               localStorage.getItem("usuario") || "";
+
+const puedeAdministrar = rol === "administrador" || rol === "empleado";
+
+document.getElementById("nombreUsuario").textContent = nombre;
+document.getElementById("panelAdministrador").style.display =
+    puedeAdministrar ? "block" : "none";
+
+const catalogo = document.getElementById("catalogo");
+const formulario = document.getElementById("formularioProducto");
+const formProducto = document.getElementById("formProducto");
+const mensaje = document.getElementById("mensaje");
+
+let productos = [];
+
+function mostrarMensaje(texto, tipo = "danger") {
+    mensaje.textContent = texto;
+    mensaje.className = "alert alert-" + tipo;
+}
+
+function ocultarMensaje() {
+    mensaje.className = "alert d-none";
+}
+
+function escapar(texto) {
+    return String(texto ?? "").replace(/[&<>"']/g, letra => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[letra]);
+}
+
+function abrirFormulario(producto = null) {
+    formProducto.reset();
+    document.getElementById("idProducto").value =
+        producto ? producto.id_producto : "";
+    document.getElementById("nombre").value =
+        producto ? producto.nombre : "";
+    document.getElementById("precio").value =
+        producto ? producto.precio : "";
+    document.getElementById("descripcion").value =
+        producto ? (producto.descripcion || "") : "";
+    document.getElementById("activo").checked =
+        producto ? Number(producto.activo) === 1 : true;
+
+    document.getElementById("tituloFormulario").textContent =
+        producto ? "Editar producto" : "Agregar producto";
+
+    document.getElementById("btnGuardar").textContent =
+        producto ? "Guardar cambios" : "Guardar producto";
+
+    formulario.style.display = "block";
+    formulario.scrollIntoView({ behavior: "smooth" });
+}
+
+function cerrarFormulario() {
+    formulario.style.display = "none";
+    formProducto.reset();
+}
+
+function dibujarCatalogo() {
+    const busqueda = document.getElementById("busqueda").value
+        .trim().toLowerCase();
+    const verTodos = document.getElementById("filtroEstado").value === "todos";
+
+    const lista = productos.filter(p => {
+        const activo = Number(p.activo) === 1;
+        const coincideNombre = String(p.nombre || "")
+            .toLowerCase().includes(busqueda);
+        return coincideNombre && (verTodos || activo || puedeAdministrar);
+    });
+
+    catalogo.innerHTML = "";
+    document.getElementById("sinProductos").hidden = lista.length > 0;
+
+    lista.forEach(p => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "col-sm-6 col-lg-4 col-xl-3";
+
+        const imagen = p.imagen
+            ? (String(p.imagen).startsWith("/") ||
+               /^https?:\/\//i.test(String(p.imagen))
+                ? String(p.imagen) : "/img/productos/" + String(p.imagen))
+            : "/img/productos/sin-imagen.jpg";
+
+        tarjeta.innerHTML = `
+            <div class="card producto-card shadow-sm">
+                <img src="${escapar(imagen)}"
+                     class="card-img-top"
+                     alt="${escapar(p.nombre)}"
+                     onerror="this.onerror=null;this.src='https://placehold.co/600x450?text=Akari+Store'">
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${escapar(p.nombre)}</h5>
+                    <p class="card-text text-secondary">
+                        ${escapar(p.descripcion || "Diseño disponible en Akari Store.")}
+                    </p>
+                    <p class="precio">$${Number(p.precio).toFixed(2)}</p>
+                    
+                    ${Number(p.activo) !== 1 ? '<span class="badge text-bg-secondary mb-2">Inactivo</span>' : ''}
+
+                    <a class="btn btn-akari mt-auto mb-2"
+                       href="https://wa.me/50360117459?text=${encodeURIComponent("Hola, quiero consultar por: " + p.nombre)}" 
+                       target="_blank" 
+                       rel="noopener">
+                        Consultar por WhatsApp
+                    </a>
+
+                    ${puedeAdministrar ? `
+                        <div class="d-flex flex-wrap gap-1 mt-2">
+                            <button class="btn btn-outline-dark btn-sm"
+                                data-accion="editar"
+                                data-id="${Number(p.id_producto)}">
+                                Editar
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                data-accion="estado"
+                                data-id="${Number(p.id_producto)}">
+                                ${Number(p.activo) === 1 ? "Desactivar" : "Activar"}
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm"
+                                data-accion="eliminar"
+                                data-id="${Number(p.id_producto)}">
+                                <i class="bi bi-trash"></i> Eliminar producto
+                            </button>
+                        </div>
+                    ` : ""}
+                </div>
+            </div>`;
+        catalogo.appendChild(tarjeta);
+    });
+}
+
+async function cargarProductos() {
+    document.getElementById("cargando").style.display = "block";
+    catalogo.innerHTML = "";
+
+    try {
+        const respuesta = await fetch("/productos");
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) throw new Error(datos.error || "No se pudieron cargar los productos.");
+
+        productos = Array.isArray(datos) ? datos : (datos.productos || []);
+        document.getElementById("cargando").style.display = "none";
+        dibujarCatalogo();
+    } catch (error) {
+        document.getElementById("cargando").style.display = "none";
+        mostrarMensaje("Error al cargar el catálogo: " + error.message);
+    }
+}
+
+document.getElementById("btnNuevo").addEventListener("click", () => {
+    ocultarMensaje();
+    abrirFormulario();
+});
+
+document.getElementById("btnCancelar").addEventListener("click", cerrarFormulario);
+document.getElementById("busqueda").addEventListener("input", dibujarCatalogo);
+document.getElementById("filtroEstado").addEventListener("change", dibujarCatalogo);
+
+formProducto.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!puedeAdministrar) return;
+
+    const id = document.getElementById("idProducto").value;
+    const datos = new FormData(formProducto);
+    datos.set("activo", document.getElementById("activo").checked ? "1" : "0");
+
+    const url = id ? "/productos/editar" : "/productos";
+
+    try {
+        const respuesta = await fetch(url, { method: "POST", body: datos });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) throw new Error(resultado.error || "No se pudo guardar el producto.");
+
+        mostrarMensaje(resultado.mensaje || "Producto guardado correctamente.", "success");
+        cerrarFormulario();
+        await cargarProductos();
+    } catch (error) {
+        mostrarMensaje("Error al guardar: " + error.message);
+    }
+});
+
+document.getElementById("btnCerrar").addEventListener("click", () => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("nombre");
+    localStorage.removeItem("rol");
+    window.location.href = "/login.html";
+});
+
+if (!rol) {
+    window.location.href = "/login.html";
+} else {
+    cargarProductos();
+}
+
+// Función corregida enviando JSON puro a la ruta de eliminar
+async function eliminarProducto(id) {
+    if (!confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+        return;
+    }
+
+    try {
+        const respuesta = await fetch("/productos/eliminar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id_producto: id })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(resultado.error || resultado.mensaje || "No se pudo eliminar el producto.");
+        }
+
+        alert(resultado.mensaje || "Producto eliminado correctamente.");
+        await cargarProductos();
+        
+    } catch (error) {
+        alert("Error: " + error.message);
+        console.error(error);
+    }
+}
+
+// Escuchador global de clics en el catálogo
+catalogo.addEventListener("click", async event => {
+    const boton = event.target.closest("button[data-accion]");
+    if (!boton || !puedeAdministrar) return;
+
+    const id = Number(boton.dataset.id);
+    const producto = productos.find(p => Number(p.id_producto) === id);
+    if (!producto) return;
+
+    if (boton.dataset.accion === "editar") {
+        abrirFormulario(producto);
+        return;
+    }
+
+    if (boton.dataset.accion === "eliminar") {
+        await eliminarProducto(id);
+        return;
+    }
+
+    if (boton.dataset.accion === "estado") {
+        const nuevoEstado = Number(producto.activo) === 1 ? 0 : 1;
+        if (!confirm(nuevoEstado ? "¿Activar este producto?" : "¿Desactivar este producto?")) return;
+
+        try {
+            const respuesta = await fetch("/productos/estado", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id_producto: id,
+                    activo: nuevoEstado
+                })
+            });
+            const datos = await respuesta.json();
+            if (!respuesta.ok) throw new Error(datos.error || "No se pudo cambiar el estado.");
+            mostrarMensaje(datos.mensaje || "Estado actualizado.", "success");
+            await cargarProductos();
+        } catch (error) {
+            mostrarMensaje(error.message);
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+:root {
+    --purple-primary: #7c3aed;  
+    --purple-accent: #9333ea;   
+    --morado-neon: #7c3aed;
+    --morado-hover: #6d28d9;
+    --morado-claro: #f3e8ff;
+    --negro-fondo: #f8fafc;
+    --negro-card: #ffffff;
+    --gris-texto: #64748b;
+    --blanco: #ffffff;
+    --borde: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Arial Black', -apple-system, sans-serif;
+    background: var(--negro-fondo);
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* =========================
+   BARRA DE NAVEGACIÓN Y LOGO
+========================= */
+
+.navbar-akari {
+    width: 100%;
+    min-height: 90px;
+    background: #ffffff !important;
+    border-bottom: 2px solid var(--borde);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-akari a {
+    color: #0f172a !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.navbar-akari a:hover {
+    color: var(--morado-neon) !important;
+}
+
+.logo-akari {
+    width: 65px !important;
+    height: 65px !important;
+    min-width: 65px !important;
+    min-height: 65px !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(124, 58, 237, 0.4) !important;
+    box-shadow: 
+        0 10px 25px -5px rgba(124, 58, 237, 0.25),
+        0 0 20px rgba(124, 58, 237, 0.15) !important;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.4s ease, 
+                border-color 0.4s ease;
+}
+
+.logo-akari:hover {
+    transform: translateY(-4px) scale(1.04) rotate(2deg);
+    border-color: var(--purple-accent) !important;
+    box-shadow: 
+        0 15px 30px -5px rgba(124, 58, 237, 0.35),
+        0 0 30px rgba(124, 58, 237, 0.25) !important;
+}
+
+#nombreUsuario {
+    color: #64748b !important;
+    font-weight: 700;
+}
+
+#btnCerrar {
+    border: 2px solid var(--morado-neon) !important;
+    background: var(--morado-neon) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+}
+
+#btnCerrar:hover {
+    background: transparent !important;
+    color: var(--morado-neon) !important;
+}
+
+/* =========================
+   ENCABEZADO DE SECCIÓN
+========================= */
+
+.titulo {
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    font-size: clamp(28px, 4vw, 38px);
+}
+
+main.container {
+    max-width: 1200px !important;
+}
+
+/* =========================
+   PANEL ADMINISTRADOR Y BOTÓN AGREGAR
+========================= */
+
+#panelAdministrador {
+    margin-bottom: 2rem !important;
+}
+
+.btn-akari, 
+#btnNuevo {
+    background: var(--morado-neon) !important;
+    color: white !important;
+    border: 2px solid var(--morado-neon) !important;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+    transition: all 0.25s ease !important;
+}
+
+.btn-akari:hover, 
+#btnNuevo:hover {
+    background: var(--morado-hover) !important;
+    border-color: var(--morado-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+}
+
+/* =========================
+   DISEÑO DEL FORMULARIO DE PRODUCTO
+========================= */
+
+#formularioProducto {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    border: 2px solid rgba(124, 58, 237, 0.15) !important;
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.08) !important;
+    transition: all 0.3s ease;
+}
+
+#tituloFormulario {
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+#tituloFormulario::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--morado-neon);
+    border-radius: 2px;
+}
+
+.form-label {
+    font-weight: 800;
+    font-size: 12px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}
+
+.form-control, 
+.form-select {
+    border-radius: 12px !important;
+    border: 1px solid var(--borde) !important;
+    padding: 12px 16px;
+    font-size: 14px;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, 
+.form-select:focus {
+    background-color: #ffffff;
+    border-color: var(--morado-neon) !important;
+    box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.15) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--morado-neon) !important;
+    border-color: var(--morado-neon) !important;
+}
+
+.form-check-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: #0f172a;
+}
+
+#btnCancelar {
+    border-radius: 12px !important;
+    padding: 12px 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+/* =========================
+   TARJETAS DE PRODUCTO EN EL CATÁLOGO
+========================= */
+
+.producto-card {
+    border: 1px solid var(--borde) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    height: 100%;
+    background: var(--blanco);
+    transition: all 0.25s ease-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.producto-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--morado-neon) !important;
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.1) !important;
+}
+
+.producto-card img {
+    height: 260px !important;
+    object-fit: cover;
+    background: #f8fafc;
+}
+
+.producto-card .card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 22px !important;
+}
+
+.producto-card .card-title {
+    font-size: 17px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+}
+
+.producto-card .card-text {
+    font-size: 13px;
+    color: var(--gris-texto) !important;
+    margin-bottom: 15px;
+}
+
+.precio {
+    color: var(--morado-neon) !important;
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+}
+
+/* Mensajes y Alertas */
+#mensaje {
+    white-space: pre-line;
+    border-radius: 14px !important;
+}
+
+footer {
+    background: #0f172a;
+    color: #94a3b8 !important;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
