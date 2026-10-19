@@ -1,3 +1,4 @@
+
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse
 import mysql.connector
@@ -14,8 +15,7 @@ from http.cookies import SimpleCookie
 
 PORT = 3000
 
-# Sesiones activas mientras el servidor está funcionando
-SESIONES = {}  # token: datos del usuario autenticado
+SESIONES = {}
 
 DB_CONFIG = {
     "host": "localhost",
@@ -27,9 +27,7 @@ DB_CONFIG = {
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CARPETA_IMAGENES = os.path.join(
-    BASE_DIR,
-    "img",
-    "productos"
+    BASE_DIR, "img", "productos"
 )
 
 os.makedirs(CARPETA_IMAGENES, exist_ok=True)
@@ -45,16 +43,28 @@ def conectar_bd():
 
 def obtener_sesion(handler):
     cookies = SimpleCookie(handler.headers.get("Cookie", ""))
-    cookie_sesion = cookies.get("akari_session")
-    if not cookie_sesion:
+    cookie = cookies.get("akari_session")
+
+    if not cookie:
         return None
-    return SESIONES.get(cookie_sesion.value)
+
+    return SESIONES.get(cookie.value)
+
+
+def puede_administrar(handler):
+    sesion = obtener_sesion(handler)
+
+    if not sesion:
+        return False
+
+    rol = str(sesion.get("rol", "")).strip().lower()
+
+    return rol in ("administrador", "empleado")
 
 
 # ============================================================
 # RESPUESTAS JSON
 # ============================================================
-
 
 def responder_json(handler, datos, codigo=200, headers_extra=None):
     respuesta = json.dumps(
@@ -79,7 +89,6 @@ def responder_json(handler, datos, codigo=200, headers_extra=None):
     handler.wfile.write(respuesta)
 
 
-
 # ============================================================
 # LEER JSON
 # ============================================================
@@ -91,6 +100,7 @@ def leer_json(handler):
         return {}
 
     cuerpo = handler.rfile.read(longitud)
+
     return json.loads(cuerpo.decode("utf-8"))
 
 
@@ -109,7 +119,10 @@ def leer_multipart(handler):
     if len(partes_boundary) != 2:
         return None
 
-    boundary = partes_boundary[1].strip().strip('"').encode("utf-8")
+    boundary = (
+        partes_boundary[1].strip().strip('"').encode("utf-8")
+    )
+
     longitud = int(handler.headers.get("Content-Length", 0))
 
     if longitud <= 0:
@@ -127,26 +140,32 @@ def leer_multipart(handler):
         if b"\r\n\r\n" not in parte:
             continue
 
-        encabezados, contenido = parte.split(b"\r\n\r\n", 1)
+        encabezados, contenido = parte.split(
+            b"\r\n\r\n", 1
+        )
+
         contenido = contenido.rstrip(b"\r\n")
 
         encabezados_texto = encabezados.decode(
-            "utf-8",
-            errors="ignore"
+            "utf-8", errors="ignore"
         )
 
         nombre = None
         nombre_archivo = None
 
         for linea in encabezados_texto.split("\r\n"):
-            if "Content-Disposition:" in linea:
-                if 'name="' in linea:
-                    nombre = linea.split('name="', 1)[1].split('"', 1)[0]
+            if "Content-Disposition:" not in linea:
+                continue
 
-                if 'filename="' in linea:
-                    nombre_archivo = linea.split(
-                        'filename="', 1
-                    )[1].split('"', 1)[0]
+            if 'name="' in linea:
+                nombre = linea.split(
+                    'name="', 1
+                )[1].split('"', 1)[0]
+
+            if 'filename="' in linea:
+                nombre_archivo = linea.split(
+                    'filename="', 1
+                )[1].split('"', 1)[0]
 
         if not nombre:
             continue
@@ -158,8 +177,7 @@ def leer_multipart(handler):
             }
         else:
             datos[nombre] = contenido.decode(
-                "utf-8",
-                errors="replace"
+                "utf-8", errors="replace"
             )
 
     return datos
@@ -173,19 +191,21 @@ def guardar_imagen(imagen):
     if not imagen or not imagen.get("filename"):
         return None
 
-    nombre_original = os.path.basename(imagen["filename"])
-    extension = os.path.splitext(nombre_original)[1].lower()
+    nombre_original = os.path.basename(
+        imagen["filename"]
+    )
+
+    extension = os.path.splitext(
+        nombre_original
+    )[1].lower()
 
     extensiones_permitidas = (
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp"
+        ".jpg", ".jpeg", ".png", ".webp"
     )
 
     if extension not in extensiones_permitidas:
         raise ValueError(
-            "Formato de imagen no permitido. Use JPG, JPEG, PNG o WEBP."
+            "Formato no permitido. Use JPG, JPEG, PNG o WEBP."
         )
 
     contenido = imagen.get("data", b"")
@@ -193,15 +213,13 @@ def guardar_imagen(imagen):
     if not contenido:
         raise ValueError("La imagen está vacía.")
 
-    # Límite de 5 MB
     if len(contenido) > 5 * 1024 * 1024:
         raise ValueError("La imagen no puede superar los 5 MB.")
 
     nombre_archivo = str(uuid.uuid4()) + extension
 
     ruta = os.path.join(
-        CARPETA_IMAGENES,
-        nombre_archivo
+        CARPETA_IMAGENES, nombre_archivo
     )
 
     with open(ruta, "wb") as archivo:
@@ -223,7 +241,6 @@ class MiServidor(SimpleHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
 
-        # Obtener productos de MySQL
         if url.path == "/productos":
             conexion = None
             cursor = None
@@ -239,32 +256,27 @@ class MiServidor(SimpleHTTPRequestHandler):
                         descripcion,
                         precio,
                         imagen,
-                        activo
+                        activo,
+                        tipo_producto,
+                        categoria
                     FROM productos
                     ORDER BY id_producto DESC
                 """)
 
                 productos = cursor.fetchall()
 
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "productos": productos
-                    }
-                )
+                responder_json(self, {
+                    "estado": True,
+                    "productos": productos
+                })
 
             except Exception as error:
-                print("ERROR PRODUCTOS:", error)
+                print("ERROR AL CARGAR PRODUCTOS:", repr(error))
 
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": "No se pudieron cargar los productos."
-                    },
-                    500
-                )
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "No se pudieron cargar los productos."
+                }, 500)
 
             finally:
                 if cursor:
@@ -274,20 +286,22 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # Revisar sesión antes de permitir páginas privadas
-        usuario_sesion = obtener_sesion(self)
+        sesion = obtener_sesion(self)
+
         paginas_privadas = (
             "/index.html",
             "/catalogo.html",
             "/personalizar.html",
-            "/pedidos.html",
+            "/pedidos.html"
         )
 
         if url.path == "/":
-            self.path = "/index.html" if usuario_sesion else "/login.html"
+            self.path = (
+                "/index.html" if sesion else "/login.html"
+            )
             return SimpleHTTPRequestHandler.do_GET(self)
 
-        if url.path in paginas_privadas and not usuario_sesion:
+        if url.path in paginas_privadas and not sesion:
             self.send_response(302)
             self.send_header("Location", "/login.html")
             self.send_header("Cache-Control", "no-store")
@@ -303,84 +317,79 @@ class MiServidor(SimpleHTTPRequestHandler):
     def do_POST(self):
         url = urlparse(self.path)
 
-        # ====================================================
         # CERRAR SESIÓN
-        # ====================================================
-
         if url.path == "/logout":
-            cookies = SimpleCookie(self.headers.get("Cookie", ""))
-            cookie_sesion = cookies.get("akari_session")
-            if cookie_sesion:
-                SESIONES.pop(cookie_sesion.value, None)
+            cookies = SimpleCookie(
+                self.headers.get("Cookie", "")
+            )
+
+            cookie = cookies.get("akari_session")
+
+            if cookie:
+                SESIONES.pop(cookie.value, None)
 
             responder_json(
                 self,
-                {"estado": True, "mensaje": "Sesión cerrada correctamente."},
+                {
+                    "estado": True,
+                    "mensaje": "Sesión cerrada correctamente."
+                },
                 headers_extra={
-                    "Set-Cookie": "akari_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
+                    "Set-Cookie":
+                    "akari_session=; Path=/; HttpOnly; "
+                    "SameSite=Lax; Max-Age=0"
                 }
             )
             return
 
-        # ====================================================
-        # REGISTRO DE USUARIOS
-        # ====================================================
-
+        # REGISTRO
         if url.path == "/registro":
             try:
                 datos = leer_json(self)
 
-                nombre = str(datos.get("nombre", "")).strip()
-                usuario = str(datos.get("usuario", "")).strip()
-                contrasena = str(datos.get("contrasena", ""))
+                nombre = str(
+                    datos.get("nombre", "")
+                ).strip()
+
+                usuario = str(
+                    datos.get("usuario", "")
+                ).strip()
+
+                contrasena = str(
+                    datos.get("contrasena", "")
+                )
 
                 if not nombre or not usuario or not contrasena:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Complete todos los campos."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Complete todos los campos."
+                    }, 400)
                     return
 
                 from crud_usuarios import crud_usuarios
 
                 crud = crud_usuarios()
+
                 estado, mensaje = crud.registrar(
-                    nombre,
-                    usuario,
-                    contrasena
+                    nombre, usuario, contrasena
                 )
 
-                responder_json(
-                    self,
-                    {
-                        "estado": bool(estado),
-                        "mensaje": mensaje
-                    },
-                    200 if estado else 400
-                )
+                responder_json(self, {
+                    "estado": bool(estado),
+                    "mensaje": mensaje
+                }, 200 if estado else 400)
 
             except Exception as error:
-                print("ERROR REGISTRO:", error)
+                print("ERROR REGISTRO:", repr(error))
 
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": "No se pudo registrar el usuario."
-                    },
-                    500
-                )
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "No se pudo registrar el usuario."
+                }, 500)
 
             return
 
-        # ====================================================
         # INICIO DE SESIÓN
-        # ====================================================
-
         if url.path == "/login":
             conexion = None
             cursor = None
@@ -388,8 +397,13 @@ class MiServidor(SimpleHTTPRequestHandler):
             try:
                 datos = leer_json(self)
 
-                usuario = str(datos.get("usuario", "")).strip()
-                contrasena = str(datos.get("contrasena", ""))
+                usuario = str(
+                    datos.get("usuario", "")
+                ).strip()
+
+                contrasena = str(
+                    datos.get("contrasena", "")
+                )
 
                 conexion = conectar_bd()
                 cursor = conexion.cursor(dictionary=True)
@@ -413,51 +427,44 @@ class MiServidor(SimpleHTTPRequestHandler):
 
                 resultado = cursor.fetchone()
 
-                if resultado:
-                    token = secrets.token_urlsafe(32)
-                    SESIONES[token] = {
-                        "id_usuario": resultado["id_usuario"],
-                        "usuario": resultado["usuario"],
-                        "nombre": resultado["nombre"],
-                        "id_rol": resultado["id_rol"],
-                        "rol": resultado["rol"]
-                    }
+                if not resultado:
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Usuario o contraseña incorrectos."
+                    }, 401)
+                    return
 
-                    responder_json(
-                        self,
-                        {
-                            "estado": True,
-                            "mensaje": "Bienvenido a Akari Store.",
-                            **SESIONES[token]
-                        },
-                        headers_extra={
-                            "Set-Cookie": (
-                                "akari_session=" + token
-                                + "; Path=/; HttpOnly; SameSite=Lax"
-                            )
-                        }
-                    )
-                else:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Usuario o contraseña incorrectos."
-                        },
-                        401
-                    )
+                token = secrets.token_urlsafe(32)
 
-            except Exception as error:
-                print("ERROR LOGIN:", error)
+                SESIONES[token] = {
+                    "id_usuario": resultado["id_usuario"],
+                    "usuario": resultado["usuario"],
+                    "nombre": resultado["nombre"],
+                    "id_rol": resultado["id_rol"],
+                    "rol": resultado["rol"]
+                }
 
                 responder_json(
                     self,
                     {
-                        "estado": False,
-                        "mensaje": "Ocurrió un error al iniciar sesión."
+                        "estado": True,
+                        "mensaje": "Bienvenido a Akari Store.",
+                        **SESIONES[token]
                     },
-                    500
+                    headers_extra={
+                        "Set-Cookie":
+                        "akari_session=" + token +
+                        "; Path=/; HttpOnly; SameSite=Lax"
+                    }
                 )
+
+            except Exception as error:
+                print("ERROR LOGIN:", repr(error))
+
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "Ocurrió un error al iniciar sesión."
+                }, 500)
 
             finally:
                 if cursor:
@@ -467,25 +474,30 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # Las operaciones de modificación de productos requieren iniciar sesión.
+        # PROTEGER OPERACIONES DE PRODUCTOS
         rutas_protegidas = (
-            "/productos/eliminar",
-            "/productos/estado",
-            "/productos/editar",
             "/productos",
+            "/productos/editar",
+            "/productos/eliminar",
+            "/productos/estado"
         )
-        if url.path in rutas_protegidas and not obtener_sesion(self):
-            responder_json(
-                self,
-                {"estado": False, "mensaje": "Debe iniciar sesión para realizar esta operación."},
-                401
-            )
-            return
 
-        # ====================================================
-        # ELIMINAR PRODUCTO (Ruta aislada que recibe JSON puro)
-        # ====================================================
+        if url.path in rutas_protegidas:
+            if not obtener_sesion(self):
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "Debe iniciar sesión."
+                }, 401)
+                return
 
+            if not puede_administrar(self):
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "No tiene permiso para modificar productos."
+                }, 403)
+                return
+
+        # ELIMINAR PRODUCTO
         if url.path == "/productos/eliminar":
             conexion = None
             cursor = None
@@ -494,19 +506,17 @@ class MiServidor(SimpleHTTPRequestHandler):
                 datos = leer_json(self)
 
                 try:
-                    id_producto = int(datos.get("id_producto", 0))
+                    id_producto = int(
+                        datos.get("id_producto", 0)
+                    )
                 except (ValueError, TypeError):
                     id_producto = 0
 
                 if id_producto <= 0:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "ID de producto no válido."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "ID de producto no válido."
+                    }, 400)
                     return
 
                 conexion = conectar_bd()
@@ -516,17 +526,14 @@ class MiServidor(SimpleHTTPRequestHandler):
                     "SELECT imagen FROM productos WHERE id_producto = %s",
                     (id_producto,)
                 )
+
                 producto = cursor.fetchone()
 
-                if producto is None:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "El producto no existe."
-                        },
-                        404
-                    )
+                if not producto:
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "El producto no existe."
+                    }, 404)
                     return
 
                 cursor.execute(
@@ -536,42 +543,36 @@ class MiServidor(SimpleHTTPRequestHandler):
 
                 conexion.commit()
 
-                # Eliminar imagen local si existe
                 imagen = producto[0]
 
                 if imagen:
-                    nombre_imagen = os.path.basename(imagen)
-                    ruta_imagen = os.path.join(
+                    ruta = os.path.join(
                         CARPETA_IMAGENES,
-                        nombre_imagen
+                        os.path.basename(imagen)
                     )
 
-                    if os.path.isfile(ruta_imagen):
+                    if os.path.isfile(ruta):
                         try:
-                            os.remove(ruta_imagen)
+                            os.remove(ruta)
                         except OSError as error:
-                            print("Error al eliminar imagen:", error)
+                            print("ERROR AL BORRAR IMAGEN:", error)
 
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "mensaje": "Producto eliminado correctamente."
-                    }
-                )
+                responder_json(self, {
+                    "estado": True,
+                    "mensaje": "Producto eliminado correctamente."
+                })
 
             except Exception as error:
                 if conexion:
                     conexion.rollback()
-                print("ERROR ELIMINAR:", error)
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": "No se pudo eliminar el producto."
-                    },
-                    500
-                )
+
+                print("ERROR ELIMINAR:", repr(error))
+
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "No se pudo eliminar el producto."
+                }, 500)
+
             finally:
                 if cursor:
                     cursor.close()
@@ -580,10 +581,7 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # ====================================================
-        # CAMBIAR ESTADO DE PRODUCTOS
-        # ====================================================
-
+        # CAMBIAR ESTADO
         if url.path == "/productos/estado":
             conexion = None
             cursor = None
@@ -591,18 +589,17 @@ class MiServidor(SimpleHTTPRequestHandler):
             try:
                 datos = leer_json(self)
 
-                id_producto = int(datos.get("id_producto", 0))
+                id_producto = int(
+                    datos.get("id_producto", 0)
+                )
+
                 activo = int(datos.get("activo", -1))
 
                 if id_producto <= 0 or activo not in (0, 1):
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Los datos enviados no son válidos."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Los datos enviados no son válidos."
+                    }, 400)
                     return
 
                 conexion = conectar_bd()
@@ -616,38 +613,31 @@ class MiServidor(SimpleHTTPRequestHandler):
 
                 if cursor.rowcount == 0:
                     conexion.rollback()
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Producto no encontrado o sin cambios."
-                        },
-                        404
-                    )
+
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Producto no encontrado o sin cambios."
+                    }, 404)
                     return
 
                 conexion.commit()
 
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "mensaje": "Estado actualizado correctamente."
-                    }
-                )
+                responder_json(self, {
+                    "estado": True,
+                    "mensaje": "Estado actualizado correctamente."
+                })
 
             except Exception as error:
                 if conexion:
                     conexion.rollback()
-                print("ERROR ESTADO:", error)
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": "Ocurrió un error al cambiar el estado."
-                    },
-                    500
-                )
+
+                print("ERROR ESTADO:", repr(error))
+
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "No se pudo cambiar el estado."
+                }, 500)
+
             finally:
                 if cursor:
                     cursor.close()
@@ -656,10 +646,7 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # ====================================================
-        # AGREGAR O EDITAR PRODUCTOS (Multipart / Form-data)
-        # ====================================================
-
+        # AGREGAR O EDITAR PRODUCTOS
         if url.path in ("/productos", "/productos/editar"):
             conexion = None
             cursor = None
@@ -669,31 +656,35 @@ class MiServidor(SimpleHTTPRequestHandler):
                 datos = leer_multipart(self)
 
                 if datos is None:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "El formulario debe enviarse como multipart/form-data."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje":
+                        "El formulario debe enviarse como multipart/form-data."
+                    }, 400)
                     return
 
                 nombre = datos.get("nombre", "").strip()
                 descripcion = datos.get("descripcion", "").strip()
+
+                tipo_producto = (
+                    datos.get("tipo_producto", "Camisas").strip()
+                    or "Camisas"
+                )
+
+                categoria = (
+                    datos.get("categoria", "Otros").strip()
+                    or "Otros"
+                )
+
                 precio_texto = datos.get("precio", "")
                 activo_texto = datos.get("activo", "1")
                 id_producto_texto = datos.get("id_producto", "0")
 
                 if not nombre:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Ingrese el nombre del producto."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Ingrese el nombre del producto."
+                    }, 400)
                     return
 
                 try:
@@ -701,66 +692,68 @@ class MiServidor(SimpleHTTPRequestHandler):
                     activo = int(activo_texto)
                     id_producto = int(id_producto_texto or 0)
                 except (ValueError, TypeError):
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "El precio o el identificador no son válidos."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Precio o identificador no válidos."
+                    }, 400)
                     return
 
                 if precio <= 0 or activo not in (0, 1):
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "El precio debe ser mayor que cero."
-                        },
-                        400
-                    )
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje":
+                        "El precio debe ser mayor que cero y el estado válido."
+                    }, 400)
                     return
 
-                if url.path == "/productos/editar" and id_producto <= 0:
-                    responder_json(
-                        self,
-                        {
-                            "estado": False,
-                            "mensaje": "Falta el ID del producto."
-                        },
-                        400
-                    )
+                es_edicion = url.path == "/productos/editar"
+
+                if es_edicion and id_producto <= 0:
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Falta el ID del producto."
+                    }, 400)
                     return
 
                 imagen = datos.get("imagen")
                 ruta_imagen = None
 
                 if imagen and imagen.get("filename"):
-                    resultado_imagen = guardar_imagen(imagen)
-                    ruta_imagen, ruta_archivo_nuevo = resultado_imagen
+                    resultado = guardar_imagen(imagen)
+                    ruta_imagen, ruta_archivo_nuevo = resultado
 
                 conexion = conectar_bd()
                 cursor = conexion.cursor(dictionary=True)
 
-                if url.path == "/productos":
+                if not es_edicion:
                     if ruta_imagen is None:
                         ruta_imagen = ""
 
                     cursor.execute("""
-                        INSERT INTO productos
-                            (nombre, descripcion, precio, imagen, activo)
-                        VALUES
-                            (%s, %s, %s, %s, %s)
+                        INSERT INTO productos (
+                            nombre,
+                            descripcion,
+                            precio,
+                            imagen,
+                            activo,
+                            tipo_producto,
+                            categoria
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                     """, (
                         nombre,
                         descripcion,
                         precio,
                         ruta_imagen,
-                        activo
+                        activo,
+                        tipo_producto,
+                        categoria
                     ))
 
+                    id_nuevo = cursor.lastrowid
                     mensaje = "Producto agregado correctamente."
+
+                    print("PRODUCTO INSERTADO. ID:", id_nuevo)
 
                 else:
                     cursor.execute("""
@@ -773,14 +766,11 @@ class MiServidor(SimpleHTTPRequestHandler):
 
                     if not producto:
                         conexion.rollback()
-                        responder_json(
-                            self,
-                            {
-                                "estado": False,
-                                "mensaje": "El producto no existe."
-                            },
-                            404
-                        )
+
+                        responder_json(self, {
+                            "estado": False,
+                            "mensaje": "El producto no existe."
+                        }, 404)
                         return
 
                     if ruta_imagen is None:
@@ -793,7 +783,9 @@ class MiServidor(SimpleHTTPRequestHandler):
                             descripcion = %s,
                             precio = %s,
                             imagen = %s,
-                            activo = %s
+                            activo = %s,
+                            tipo_producto = %s,
+                            categoria = %s
                         WHERE id_producto = %s
                     """, (
                         nombre,
@@ -801,6 +793,8 @@ class MiServidor(SimpleHTTPRequestHandler):
                         precio,
                         ruta_imagen,
                         activo,
+                        tipo_producto,
+                        categoria,
                         id_producto
                     ))
 
@@ -808,44 +802,35 @@ class MiServidor(SimpleHTTPRequestHandler):
 
                 conexion.commit()
 
-                responder_json(
-                    self,
-                    {
-                        "estado": True,
-                        "mensaje": mensaje
-                    }
-                )
+                responder_json(self, {
+                    "estado": True,
+                    "mensaje": mensaje
+                })
 
             except ValueError as error:
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": str(error)
-                    },
-                    400
-                )
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": str(error)
+                }, 400)
 
             except Exception as error:
                 if conexion:
                     conexion.rollback()
 
-                if ruta_archivo_nuevo and os.path.exists(ruta_archivo_nuevo):
+                if ruta_archivo_nuevo and os.path.exists(
+                    ruta_archivo_nuevo
+                ):
                     try:
                         os.remove(ruta_archivo_nuevo)
                     except OSError:
                         pass
 
-                print("ERROR PRODUCTOS:", error)
+                print("ERROR AL GUARDAR PRODUCTO:", repr(error))
 
-                responder_json(
-                    self,
-                    {
-                        "estado": False,
-                        "mensaje": "Ocurrió un error al procesar el producto."
-                    },
-                    500
-                )
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": "Ocurrió un error al guardar el producto."
+                }, 500)
 
             finally:
                 if cursor:
@@ -855,18 +840,10 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # ====================================================
-        # RUTA NO ENCONTRADA
-        # ====================================================
-
-        responder_json(
-            self,
-            {
-                "estado": False,
-                "mensaje": "Ruta no encontrada."
-            },
-            404
-        )
+        responder_json(self, {
+            "estado": False,
+            "mensaje": "Ruta no encontrada."
+        }, 404)
 
 
 # ============================================================
@@ -875,10 +852,10 @@ class MiServidor(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     print("==========================================")
-    print("     AKARI STORE - SERVIDOR")
+    print("       AKARI STORE - SERVIDOR")
     print("==========================================")
-    print("Servidor corriendo en:")
-    print("http://localhost:" + str(PORT))
+    print("Base de datos:", DB_CONFIG["database"])
+    print("Servidor: http://localhost:" + str(PORT))
     print("==========================================")
 
     servidor = HTTPServer(
@@ -888,6 +865,9 @@ if __name__ == "__main__":
 
     try:
         servidor.serve_forever()
+
     except KeyboardInterrupt:
         print("\nServidor detenido.")
+
+    finally:
         servidor.server_close()
