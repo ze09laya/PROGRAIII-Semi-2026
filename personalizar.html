@@ -1,0 +1,473 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Personaliza tu diseño | Akari Store</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/personalizar.css">
+</head>
+<body>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="navbar navbar-akari">
+        <div class="container nav-contenido">
+
+            <a href="/index.html" class="marca-akari">
+                <img src="/img/logo-akari.jpg" alt="Logo de Akari Store">
+                <span>AKARI <strong>STORE</strong></span>
+            </a>
+
+            <div class="nav-enlaces">
+                <a href="/index.html">Inicio</a>
+                <a href="/catalogo.html">Catálogo</a>
+                <a href="/personalizar.html" class="enlace-activo">Personalizar</a>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- PORTADA -->
+    <header class="portada-personalizar">
+        <div class="portada-contenido">
+            <span class="etiqueta-portada">DISEÑOS ÚNICOS</span>
+
+            <h1>Crea algo que sea <span>solo tuyo.</span></h1>
+
+            <p>
+                Convierte tus ideas en un diseño personalizado.
+                Tú eliges los detalles y nosotros te ayudamos a hacerlo realidad.
+            </p>
+
+            <a href="#formularioPersonalizar" class="btn-akari">
+                Crear mi diseño
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container seccion-personalizar">
+
+        <div class="encabezado-seccion">
+            <h2>Personaliza tu pedido</h2>
+            <p>
+                Completa los datos para que podamos conocer tu idea
+                y preparar una propuesta para ti.
+            </p>
+        </div>
+
+        <div class="personalizar-layout">
+
+            <!-- FORMULARIO -->
+            <section class="formulario-contenedor">
+
+                <form id="formularioPersonalizar">
+
+                    <!-- PASO 1 -->
+                    <div class="grupo-formulario">
+                        <div class="titulo-paso">
+                            <span>01</span>
+                            <div>
+                                <h3>¿Qué producto quieres?</h3>
+                                <p>Selecciona el producto que deseas personalizar.</p>
+                            </div>
+                        </div>
+
+                        <label for="producto">Tipo de producto *</label>
+                        <select id="producto" name="producto" required>
+                            <option value="">Selecciona un producto</option>
+                            <option value="Camiseta normal">Camiseta normal</option>
+                            <option value="Camiseta oversize">Camiseta oversize</option>
+                            <option value="Crop top">Crop top</option>
+                            <option value="Termo personalizado">Termo personalizado</option>
+                            <option value="Cuadro personalizado">Cuadro personalizado</option>
+                            <option value="Otro producto">Otro producto</option>
+                        </select>
+
+                        <div class="campos-dos-columnas">
+                            <div>
+                                <label for="cantidad">Cantidad *</label>
+                                <input type="number" id="cantidad" name="cantidad"
+                                       min="1" max="500" value="1" required>
+                            </div>
+
+                            <div>
+                                <label for="tipoPedido">Tipo de pedido</label>
+                                <select id="tipoPedido" name="tipoPedido">
+                                    <option value="Por unidad">Por unidad</option>
+                                    <option value="Por mayor">Por mayor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 -->
+                    <div class="grupo-formulario">
+                        <div class="titulo-paso">
+                            <span>02</span>
+                            <div>
+                                <h3>Elige los detalles</h3>
+                                <p>Cuéntanos cómo quieres que se vea tu producto.</p>
+                            </div>
+                        </div>
+
+                        <div class="campos-dos-columnas">
+                            <div>
+                                <label for="talla">Talla</label>
+                                <select id="talla" name="talla">
+                                    <option value="No aplica">No aplica</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                    <option value="Consultar talla">Consultar talla</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="color">Color del producto</label>
+                                <select id="color" name="color">
+                                    <option value="Por definir">Por definir</option>
+                                    <option value="Negro">Negro</option>
+                                    <option value="Blanco">Blanco</option>
+                                    <option value="Beige">Beige</option>
+                                    <option value="Vino">Vino</option>
+                                    <option value="Verde">Verde</option>
+                                    <option value="Azul oscuro">Azul oscuro</option>
+                                    <option value="Otro color">Otro color</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label for="tema">Tema o idea del diseño *</label>
+                        <input type="text" id="tema" name="tema"
+                               placeholder="Ej. Anime, pareja, cantante, fotografía..."
+                               maxlength="200" required>
+
+                        <label for="frase">Frase o texto que deseas incluir</label>
+                        <input type="text" id="frase" name="frase"
+                               placeholder="Ej. Un nombre, una fecha o una frase"
+                               maxlength="300">
+
+                        <label for="cancion">Canción o artista (opcional)</label>
+                        <input type="text" id="cancion" name="cancion"
+                               placeholder="Ej. Nombre de la canción o cantante"
+                               maxlength="200">
+
+                        <label for="ubicacionDiseno">Ubicación del diseño</label>
+                        <select id="ubicacionDiseno" name="ubicacionDiseno">
+                            <option value="Por definir">Por definir</option>
+                            <option value="Parte frontal">Parte frontal</option>
+                            <option value="Parte trasera">Parte trasera</option>
+                            <option value="Frente y espalda">Frente y espalda</option>
+                            <option value="Otro lugar">Otro lugar</option>
+                        </select>
+
+                        <label for="detalles">Explícanos tu idea</label>
+                        <textarea id="detalles" name="detalles" rows="4"
+                                  maxlength="1500"
+                                  placeholder="Describe cómo quieres el diseño, qué elementos debe llevar y cualquier otro detalle importante."></textarea>
+                    </div>
+
+                    <!-- PASO 3 -->
+                    <div class="grupo-formulario">
+                        <div class="titulo-paso">
+                            <span>03</span>
+                            <div>
+                                <h3>Agrega tus referencias</h3>
+                                <p>
+                                    Puedes seleccionar hasta 6 fotografías
+                                    para mostrar la idea que tienes en mente.
+                                </p>
+                            </div>
+                        </div>
+
+                        <label for="fotos">Fotografías de referencia</label>
+
+                        <div class="zona-fotos">
+                            <span class="icono-fotos">＋</span>
+                            <p>Selecciona tus imágenes</p>
+                            <small>JPG, PNG o WEBP. Máximo 6 imágenes de hasta 5 MB cada una.</small>
+
+                            <input type="file" id="fotos" name="fotos"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   multiple>
+                        </div>
+
+                        <div id="vistaFotos" class="vista-fotos"></div>
+
+                        <p class="nota-fotos">
+                            Las imágenes se enviarán por separado mediante WhatsApp.
+                            Recuerda adjuntarlas en la conversación.
+                        </p>
+                    </div>
+
+                    <!-- PASO 4 -->
+                    <div class="grupo-formulario">
+                        <div class="titulo-paso">
+                            <span>04</span>
+                            <div>
+                                <h3>Datos del cliente</h3>
+                                <p>Necesitamos estos datos para contactarte.</p>
+                            </div>
+                        </div>
+
+                        <label for="nombreCliente">Nombre completo *</label>
+                        <input type="text" id="nombreCliente" name="nombreCliente"
+                               maxlength="120" autocomplete="name" required>
+
+                        <div class="campos-dos-columnas">
+                            <div>
+                                <label for="telefono">Tu número de WhatsApp *</label>
+                                <input type="tel" id="telefono" name="telefono"
+                                       placeholder="Ej. 7000 0000"
+                                       maxlength="25" autocomplete="tel" required>
+                            </div>
+
+                            <div>
+                                <label for="municipio">Departamento y municipio *</label>
+                                <input type="text" id="municipio" name="municipio"
+                                       placeholder="Ej. Usulután, Usulután"
+                                       maxlength="150" required>
+                            </div>
+                        </div>
+
+                        <label for="direccion">Dirección o punto de entrega</label>
+                        <textarea id="direccion" name="direccion" rows="2"
+                                  maxlength="500"
+                                  placeholder="Indica tu dirección o el lugar donde prefieres recibir tu pedido."></textarea>
+
+                        <label for="entrega">Método de entrega preferido</label>
+                        <select id="entrega" name="entrega">
+                            <option value="Envío nacional">Envío nacional</option>
+                            <option value="Punto de encuentro o recogida">Punto de encuentro o recogida</option>
+                            <option value="Consultar opciones">Consultar opciones</option>
+                        </select>
+                    </div>
+
+                    <!-- CONFIRMACIÓN -->
+                    <div class="aviso-pedido">
+                        <strong>Antes de enviar tu solicitud</strong>
+                        <p>
+                            Este formulario es una solicitud de personalización.
+                            El precio, la disponibilidad y el tiempo de entrega
+                            se confirmarán por WhatsApp antes de aceptar el pedido.
+                        </p>
+                    </div>
+
+                    <div class="confirmacion">
+                        <input type="checkbox" id="acepto" required>
+                        <label for="acepto">
+                            Confirmo que los datos proporcionados son correctos.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-enviar">
+                        Enviar solicitud por WhatsApp
+                        <span>↗</span>
+                    </button>
+
+                    <p class="texto-privacidad">
+                        Tus datos se incluirán en el mensaje que enviarás a Akari Store.
+                    </p>
+
+                </form>
+            </section>
+
+            <!-- PANEL INFORMATIVO -->
+            <aside class="panel-informativo">
+
+                <div class="tarjeta-informativa">
+                    <span class="numero-informativo">01</span>
+                    <h3>Cuéntanos tu idea</h3>
+                    <p>
+                        Indica el producto, los colores, la frase y los detalles
+                        que quieres incluir.
+                    </p>
+                </div>
+
+                <div class="tarjeta-informativa">
+                    <span class="numero-informativo">02</span>
+                    <h3>Revisamos tu solicitud</h3>
+                    <p>
+                        Nos comunicaremos contigo para aclarar detalles
+                        y consultar el precio de tu diseño.
+                    </p>
+                </div>
+
+                <div class="tarjeta-informativa">
+                    <span class="numero-informativo">03</span>
+                    <h3>Confirmamos el diseño</h3>
+                    <p>
+                        Antes de elaborar el producto, podrás revisar
+                        la propuesta y confirmar tu pedido.
+                    </p>
+                </div>
+
+                <div class="contacto-informativo">
+                    <h3>¿Tienes alguna duda?</h3>
+                    <p>Escríbenos directamente y te ayudaremos.</p>
+                    <a href="https://wa.me/50360117459"
+                       target="_blank" rel="noopener noreferrer">
+                        WhatsApp: 6011 7459
+                    </a>
+                </div>
+
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer-akari">
+        <a href="/index.html" class="marca-akari marca-footer">
+            AKARI <strong>STORE</strong>
+        </a>
+        <p>Camisas urbanas | Diseños únicos</p>
+        <p>Envíos nacionales en El Salvador</p>
+    </footer>
+
+    <script>
+    "use strict";
+
+    const formularioPersonalizar =
+        document.getElementById("formularioPersonalizar");
+
+    const inputFotos = document.getElementById("fotos");
+    const vistaFotos = document.getElementById("vistaFotos");
+
+    const MAX_FOTOS = 6;
+    const MAX_TAMANO = 5 * 1024 * 1024;
+
+    const formatosPermitidos = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    // Mostrar los nombres de las imágenes seleccionadas.
+    inputFotos.addEventListener("change", () => {
+        vistaFotos.innerHTML = "";
+
+        const archivos = Array.from(inputFotos.files);
+
+        if (archivos.length > MAX_FOTOS) {
+            alert("Solo puedes seleccionar un máximo de 6 fotografías.");
+            inputFotos.value = "";
+            return;
+        }
+
+        for (const archivo of archivos) {
+            if (!formatosPermitidos.includes(archivo.type)) {
+                alert("El archivo " + archivo.name +
+                      " no es JPG, PNG o WEBP.");
+                inputFotos.value = "";
+                vistaFotos.innerHTML = "";
+                return;
+            }
+
+            if (archivo.size > MAX_TAMANO) {
+                alert("La imagen " + archivo.name +
+                      " supera el límite de 5 MB.");
+                inputFotos.value = "";
+                vistaFotos.innerHTML = "";
+                return;
+            }
+        }
+
+        archivos.forEach(archivo => {
+            const elemento = document.createElement("div");
+            elemento.className = "archivo-seleccionado";
+            elemento.textContent = "✓ " + archivo.name;
+            vistaFotos.appendChild(elemento);
+        });
+    });
+
+    // Ajustar campos según el tipo de producto.
+    const productoSelect = document.getElementById("producto");
+    const tallaSelect = document.getElementById("talla");
+    const colorSelect = document.getElementById("color");
+
+    function ajustarCamposProducto() {
+        const producto = productoSelect.value;
+
+        const usaTalla = [
+            "Camiseta normal",
+            "Camiseta oversize",
+            "Crop top"
+        ].includes(producto);
+
+        tallaSelect.disabled = !usaTalla;
+
+        if (!usaTalla) {
+            tallaSelect.value = "No aplica";
+        } else if (tallaSelect.value === "No aplica") {
+            tallaSelect.value = "";
+        }
+
+        colorSelect.disabled = !producto;
+    }
+
+    productoSelect.addEventListener("change", ajustarCamposProducto);
+
+    // Preparar solicitud para WhatsApp.
+    formularioPersonalizar.addEventListener("submit", event => {
+        event.preventDefault();
+
+        if (!formularioPersonalizar.reportValidity()) {
+            return;
+        }
+
+        const datos = new FormData(formularioPersonalizar);
+
+        const fotos = Array.from(inputFotos.files);
+        const mensajeWhatsApp = [
+            "¡Hola, Akari Store! Quiero solicitar un diseño personalizado.",
+            "",
+            "DATOS DEL PEDIDO",
+            "Producto: " + (datos.get("producto") || ""),
+            "Cantidad: " + (datos.get("cantidad") || "1"),
+            "Tipo de pedido: " + (datos.get("tipoPedido") || ""),
+            "Talla: " + (datos.get("talla") || "No aplica"),
+            "Color: " + (datos.get("color") || ""),
+            "Tema del diseño: " + (datos.get("tema") || ""),
+            "Frase o texto: " + (datos.get("frase") || "No especificado"),
+            "Canción o artista: " + (datos.get("cancion") || "No especificado"),
+            "Ubicación del diseño: " + (datos.get("ubicacionDiseno") || ""),
+            "",
+            "DETALLES",
+            datos.get("detalles") || "Sin detalles adicionales.",
+            "",
+            "REFERENCIAS",
+            fotos.length
+                ? fotos.map((foto, i) =>
+                    (i + 1) + ". " + foto.name
+                  ).join("\n")
+                : "No se seleccionaron fotografías.",
+            "",
+            "DATOS DEL CLIENTE",
+            "Nombre: " + (datos.get("nombreCliente") || ""),
+            "WhatsApp: " + (datos.get("telefono") || ""),
+            "Departamento y municipio: " + (datos.get("municipio") || ""),
+            "Dirección: " + (datos.get("direccion") || "No especificada"),
+            "Entrega preferida: " + (datos.get("entrega") || ""),
+            "",
+            "Entiendo que el precio y el tiempo de entrega deben confirmarse."
+        ].join("\n");
+
+        const url = "https://wa.me/50360117459?text=" +
+                    encodeURIComponent(mensajeWhatsApp);
+
+        window.open(url, "_blank", "noopener,noreferrer");
+    });
+    </script>
+
+</body>
+</html>
