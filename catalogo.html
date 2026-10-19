@@ -463,16 +463,28 @@ function renderizarListaCategorias() {
     });
 }
 
+
 function cancelarEdicionCategoria() {
     categoriaEnEdicion = null;
-    document.getElementById("formCategoria").reset();
+
+    document.getElementById("nombreCategoriaAdmin").value = "";
     document.getElementById("btnGuardarCategoria").textContent = "Agregar";
     document.getElementById("btnCancelarEdicionCategoria").hidden = true;
 }
 
+
+
+
+
 selectorTipoCategoriaAdmin.addEventListener("change", () => {
-    // Al cambiar el tipo, cancelar una edición anterior y filtrar la lista.
+    const tipoSeleccionado = selectorTipoCategoriaAdmin.value;
+
+    // Limpiar la edición sin reiniciar el selector de tipo.
     cancelarEdicionCategoria();
+
+    // Conservar el tipo que se acaba de seleccionar.
+    selectorTipoCategoriaAdmin.value = tipoSeleccionado;
+
     ocultarMensaje();
     renderizarListaCategorias();
 });
