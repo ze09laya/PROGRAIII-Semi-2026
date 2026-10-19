@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -134,13 +133,27 @@
 
                 <article class="producto-card">
                     <div class="producto-imagen">
-                        <img src="/img/productos/sakuna.jpg"
+                        <img src="/img/productos/cdo.jpg"
                              alt="Camisa de anime"
                              onerror="this.style.display='none'">
                         <span class="producto-etiqueta">ANIME</span>
                     </div>
                     <div class="producto-info">
-                        <h3>Camisas de anime</h3>
+                        <h3>Camisas Personalizadas</h3>
+                        <p>Comodidad y estilo para tu día a día. </p>
+                        <a href="/catalogo.html">Ver catálogo →</a>
+                    </div>
+                </article>
+
+                <article class="producto-card">
+                    <div class="producto-imagen">
+                        <img src="/img/productos/termo-wampys.jpg"
+                             alt="Camisa estilo urbano"
+                             onerror="this.style.display='none'">
+                        <span class="producto-etiqueta">URBANO</span>
+                    </div>
+                    <div class="producto-info">
+                        <h3>Termos Personalizados</h3>
                         <p>Diseños inspirados en tus series favoritas.</p>
                         <a href="/catalogo.html">Ver catálogo →</a>
                     </div>
@@ -148,28 +161,14 @@
 
                 <article class="producto-card">
                     <div class="producto-imagen">
-                        <img src="/img/productos/over.webp"
-                             alt="Camisa estilo urbano"
-                             onerror="this.style.display='none'">
-                        <span class="producto-etiqueta">URBANO</span>
-                    </div>
-                    <div class="producto-info">
-                        <h3>Camisas oversize</h3>
-                        <p>Comodidad y estilo para tu día a día.</p>
-                        <a href="/catalogo.html">Ver catálogo →</a>
-                    </div>
-                </article>
-
-                <article class="producto-card">
-                    <div class="producto-imagen">
-                        <img src="/img/productos/luren.jpg"
+                        <img src="/img/productos/cuadro-goat.jpg"
                              alt="Camisa personalizada"
                              onerror="this.style.display='none'">
                         <span class="producto-etiqueta">A TU GUSTO</span>
                     </div>
                     <div class="producto-info">
-                        <h3>Diseños personalizados</h3>
-                        <p>Personaliza tu camisa como tú quieras.</p>
+                        <h3>Cuadros personalizados</h3>
+                        <p>Personaliza tu cuadro como tú quieras.</p>
                         <a href="/personalizar.html">Personalizar →</a>
                     </div>
                 </article>
@@ -230,22 +229,30 @@
 
     </main>
 
-    <!-- PIE DE PÁGINA -->
-    <footer class="footer-akari">
-        <div class="footer-contenido">
-            <a href="/index.html" class="footer-logo">AKARI STORE</a>
-            <p>Camisas urbanas | Diseños únicos</p>
-            <p>Pedidos por unidad y docena.</p>
-            <a href="https://wa.me/50360117459" target="_blank"
-               rel="noopener noreferrer" class="enlace-whatsapp">
-                Contactar por WhatsApp: 6011-7459
+  <!-- PIE DE PÁGINA -->
+<footer class="footer-akari">
+    <div class="footer-contenido">
+        <a href="/index.html" class="footer-logo">AKARI STORE</a>
+        <p>Camisas urbanas | Cuadros Personalizados | Termos con diseños únicos</p>
+        <p>Pedidos por unidad y docena.</p>
+        
+        <div class="footer-redes">
+            <!-- WhatsApp -->
+            <a href="https://wa.me/50360117459" target="_blank" rel="noopener noreferrer" class="enlace-whatsapp">
+                Contactar por WhatsApp
+            </a>
+
+            <!-- Instagram (Reemplaza 'tu_usuario' por tu usuario real de Instagram) -->
+            <a href="https://www.instagram.com/akari.store_sv" target="_blank" rel="noopener noreferrer" class="enlace-instagram">
+                Síguenos en Instagram
             </a>
         </div>
+    </div>
 
-        <div class="footer-final">
-            © 2026 Akari Store. Todos los derechos reservados.
-        </div>
-    </footer>
+    <div class="footer-final">
+        &copy; 2026 Akari Store. Todos los derechos reservados.
+    </div>
+</footer>
 
     <script>
         // Abrir y cerrar el menú en dispositivos móviles
@@ -261,20 +268,85 @@
         });
 
         // Cerrar sesión
+        
+        // Cerrar sesión
         document.getElementById("btnCerrarSesion")
-            .addEventListener("click", function () {
+            .addEventListener("click", async function () {
 
                 const confirmar = confirm("¿Deseas cerrar sesión?");
 
-                if (confirmar) {
-                    localStorage.removeItem("usuario");
-                    localStorage.removeItem("nombre");
-                    localStorage.removeItem("rol");
+                if (!confirmar) return;
 
-                    window.location.href = "/login.html";
+                try {
+                    const respuesta = await fetch("/logout", {
+                        method: "POST"
+                    });
+
+                    const resultado = await respuesta.json();
+
+                    if (respuesta.ok && resultado.estado) {
+                        localStorage.removeItem("usuario");
+                        localStorage.removeItem("nombre");
+                        localStorage.removeItem("rol");
+
+                        window.location.replace("/login.html");
+                    } else {
+                        alert("No se pudo cerrar la sesión.");
+                    }
+                } catch (error) {
+                    alert("No se pudo conectar con el servidor.");
                 }
             });
+
+      
     </script>
+
+
+
+<!-- BOTÓN FLOTANTE DE AKARI IA -->
+<button
+    id="btnAkariIA"
+    class="boton-akari-ia"
+    type="button"
+    aria-label="Abrir asistente Akari IA"
+    title="Habla con Akari IA"
+>
+    <span class="gatito-ia">🐱</span>
+    <span class="texto-ia">Akari IA</span>
+</button>
+
+<!-- VENTANA DEL ASISTENTE -->
+<div id="ventanaAkariIA" class="ventana-akari-ia" hidden>
+    <div class="encabezado-ia">
+        <div>
+            <strong>🐱 Akari IA</strong>
+            <p>Asistente virtual de Akari Store</p>
+        </div>
+
+        <button id="cerrarAkariIA" type="button"
+                aria-label="Cerrar asistente">×</button>
+    </div>
+
+    <div class="contenido-ia">
+        <p>¡Hola! 💜 Soy Akari IA.</p>
+        <p>Pronto podré ayudarte a encontrar diseños,
+           consultar productos y resolver tus dudas.</p>
+    </div>
+</div>
+
+<script>
+    const btnAkariIA = document.getElementById("btnAkariIA");
+    const ventanaAkariIA = document.getElementById("ventanaAkariIA");
+    const cerrarAkariIA = document.getElementById("cerrarAkariIA");
+
+    btnAkariIA.addEventListener("click", function () {
+        ventanaAkariIA.hidden = !ventanaAkariIA.hidden;
+    });
+
+    cerrarAkariIA.addEventListener("click", function () {
+        ventanaAkariIA.hidden = true;
+    });
+</script>
 
 </body>
 </html>

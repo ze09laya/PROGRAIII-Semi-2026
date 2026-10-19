@@ -669,67 +669,213 @@ a {
     color: var(--gris-texto);
 }
 
+
 /* =========================
    PIE DE PÁGINA
 ========================= */
+/* =========================
+   PIE DE PÁGINA (PURPLE URBAN 100% MORADO)
+========================= */
 
 .footer-akari {
-    background: #0f172a;
+    background: #0d0814;
+    border-top: 2px solid rgba(124, 58, 237, 0.4);
     color: var(--blanco);
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .footer-contenido {
-    padding: 45px 20px 35px;
+    padding: 55px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .footer-logo {
     display: inline-block;
     color: var(--blanco);
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 12px;
     text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .footer-logo:hover {
     color: var(--morado-neon);
-}
-
-.footer-contenido p {
-    color: #94a3b8;
-    font-size: 13px;
-    margin-bottom: 6px;
-}
-
-.enlace-whatsapp {
-    display: inline-block;
-    margin-top: 12px;
-    color: #c084fc;
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #c084fc;
-    transition: all 0.2s;
-    text-decoration: none;
-}
-
-.enlace-whatsapp:hover {
-    color: var(--blanco);
-    border-color: var(--blanco);
     transform: scale(1.03);
 }
 
-.footer-final {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 18px;
-    color: #64748b;
-    font-size: 11px;
+.footer-contenido p {
+    color: #a1a1aa;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Redes Sociales con orillas estrictamente moradas */
+.footer-redes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.enlace-whatsapp,
+.enlace-instagram {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 280px;
+    max-width: 100%;
+    padding: 13px 20px;
+    border-radius: 30px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
+    text-decoration: none;
+    background: rgba(124, 58, 237, 0.12);
+    /* Orillas / Bordes en tono morado */
+    border: 1.5px solid rgba(168, 85, 247, 0.5) !important;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.enlace-whatsapp:hover,
+.enlace-instagram:hover {
+    background: var(--morado-neon);
+    border-color: #c084fc !important;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.45);
+}
+
+.footer-final {
+    border-top: 1px solid rgba(168, 85, 247, 0.15);
+    padding: 22px 20px;
+    color: #71717a;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+
+.footer-akari {
+    background: #0d0814;
+    border-top: 2px solid rgba(124, 58, 237, 0.3);
+    color: var(--blanco);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-contenido {
+    padding: 55px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    display: inline-block;
+    color: var(--blanco);
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-logo:hover {
+    color: var(--morado-neon);
+    transform: scale(1.03);
+}
+
+.footer-contenido p {
+    color: #a1a1aa;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Enlaces de redes sociales estilo Glassmorphism */
+.footer-redes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.enlace-whatsapp,
+.enlace-instagram {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 280px;
+    max-width: 100%;
+    padding: 13px 20px;
+    border-radius: 30px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    text-decoration: none;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1.5px solid rgba(168, 85, 247, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.enlace-whatsapp {
+    border-color: rgba(37, 211, 102, 0.4);
+}
+
+.enlace-instagram {
+    border-color: rgba(225, 48, 108, 0.4);
+}
+
+.enlace-whatsapp:hover {
+    background: rgba(37, 211, 102, 0.15);
+    border-color: #25D366;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.25);
+}
+
+.enlace-instagram:hover {
+    background: rgba(225, 48, 108, 0.15);
+    border-color: #E1306C;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(225, 48, 108, 0.25);
+}
+
+.footer-final {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 22px 20px;
+    color: #71717a;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 /* =========================
@@ -902,3 +1048,125 @@ a {
         border-radius: 12px;
     }
 }
+
+
+
+/* =========================
+   BOTÓN FLOTANTE AKARI IA
+========================= */
+
+.boton-akari-ia {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2000;
+
+    width: 76px;
+    height: 76px;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+
+    background: linear-gradient(145deg, #9333ea, #6d28d9);
+    color: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(124, 58, 237, 0.4);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.gatito-ia {
+    font-size: 32px;
+    line-height: 1.1;
+}
+
+.texto-ia {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.boton-akari-ia:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.5);
+}
+
+/* Ventana del asistente */
+
+.ventana-akari-ia {
+    position: fixed;
+    right: 24px;
+    bottom: 115px;
+    z-index: 1999;
+
+    width: 340px;
+    max-width: calc(100vw - 32px);
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+}
+
+.ventana-akari-ia[hidden] {
+    display: none;
+}
+
+.encabezado-ia {
+    background: #7c3aed;
+    color: #ffffff;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.encabezado-ia p {
+    font-size: 12px;
+    margin: 4px 0 0;
+    color: #f3e8ff;
+}
+
+.encabezado-ia button {
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.contenido-ia {
+    padding: 20px;
+    color: #334155;
+    font-size: 14px;
+}
+
+.contenido-ia p {
+    margin-bottom: 12px;
+}
+
+/* Adaptación para teléfonos */
+
+@media (max-width: 520px) {
+    .boton-akari-ia {
+        right: 16px;
+        bottom: 16px;
+        width: 68px;
+        height: 68px;
+    }
+
+    .ventana-akari-ia {
+        right: 12px;
+        bottom: 96px;
+        max-width: calc(100vw - 24px);
+    }
+}
+

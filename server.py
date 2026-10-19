@@ -4,6 +4,8 @@ import mysql.connector
 import json
 import os
 import uuid
+import secrets
+from http.cookies import SimpleCookie
 
 
 # ============================================================
@@ -11,6 +13,9 @@ import uuid
 # ============================================================
 
 PORT = 3000
+
+# Sesiones activas mientras el servidor está funcionando
+SESIONES = {}  # token: datos del usuario autenticado
 
 DB_CONFIG = {
     "host": "localhost",
@@ -38,11 +43,20 @@ def conectar_bd():
     return mysql.connector.connect(**DB_CONFIG)
 
 
+def obtener_sesion(handler):
+    cookies = SimpleCookie(handler.headers.get("Cookie", ""))
+    cookie_sesion = cookies.get("akari_session")
+    if not cookie_sesion:
+        return None
+    return SESIONES.get(cookie_sesion.value)
+
+
 # ============================================================
 # RESPUESTAS JSON
 # ============================================================
 
-def responder_json(handler, datos, codigo=200):
+
+def responder_json(handler, datos, codigo=200, headers_extra=None):
     respuesta = json.dumps(
         datos,
         ensure_ascii=False,
@@ -56,8 +70,14 @@ def responder_json(handler, datos, codigo=200):
     )
     handler.send_header("Content-Length", str(len(respuesta)))
     handler.send_header("Cache-Control", "no-store")
+
+    if headers_extra:
+        for nombre, valor in headers_extra.items():
+            handler.send_header(nombre, valor)
+
     handler.end_headers()
     handler.wfile.write(respuesta)
+
 
 
 # ============================================================
@@ -254,9 +274,25 @@ class MiServidor(SimpleHTTPRequestHandler):
 
             return
 
-        # Página principal
+        # Revisar sesión antes de permitir páginas privadas
+        usuario_sesion = obtener_sesion(self)
+        paginas_privadas = (
+            "/index.html",
+            "/catalogo.html",
+            "/personalizar.html",
+            "/pedidos.html",
+        )
+
         if url.path == "/":
-            self.path = "/index.html"
+            self.path = "/index.html" if usuario_sesion else "/login.html"
+            return SimpleHTTPRequestHandler.do_GET(self)
+
+        if url.path in paginas_privadas and not usuario_sesion:
+            self.send_response(302)
+            self.send_header("Location", "/login.html")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
 
         return SimpleHTTPRequestHandler.do_GET(self)
 
@@ -266,6 +302,25 @@ class MiServidor(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         url = urlparse(self.path)
+
+        # ====================================================
+        # CERRAR SESIÓN
+        # ====================================================
+
+        if url.path == "/logout":
+            cookies = SimpleCookie(self.headers.get("Cookie", ""))
+            cookie_sesion = cookies.get("akari_session")
+            if cookie_sesion:
+                SESIONES.pop(cookie_sesion.value, None)
+
+            responder_json(
+                self,
+                {"estado": True, "mensaje": "Sesión cerrada correctamente."},
+                headers_extra={
+                    "Set-Cookie": "akari_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
+                }
+            )
+            return
 
         # ====================================================
         # REGISTRO DE USUARIOS
@@ -359,16 +414,27 @@ class MiServidor(SimpleHTTPRequestHandler):
                 resultado = cursor.fetchone()
 
                 if resultado:
+                    token = secrets.token_urlsafe(32)
+                    SESIONES[token] = {
+                        "id_usuario": resultado["id_usuario"],
+                        "usuario": resultado["usuario"],
+                        "nombre": resultado["nombre"],
+                        "id_rol": resultado["id_rol"],
+                        "rol": resultado["rol"]
+                    }
+
                     responder_json(
                         self,
                         {
                             "estado": True,
                             "mensaje": "Bienvenido a Akari Store.",
-                            "id_usuario": resultado["id_usuario"],
-                            "usuario": resultado["usuario"],
-                            "nombre": resultado["nombre"],
-                            "id_rol": resultado["id_rol"],
-                            "rol": resultado["rol"]
+                            **SESIONES[token]
+                        },
+                        headers_extra={
+                            "Set-Cookie": (
+                                "akari_session=" + token
+                                + "; Path=/; HttpOnly; SameSite=Lax"
+                            )
                         }
                     )
                 else:
@@ -399,6 +465,21 @@ class MiServidor(SimpleHTTPRequestHandler):
                 if conexion:
                     conexion.close()
 
+            return
+
+        # Las operaciones de modificación de productos requieren iniciar sesión.
+        rutas_protegidas = (
+            "/productos/eliminar",
+            "/productos/estado",
+            "/productos/editar",
+            "/productos",
+        )
+        if url.path in rutas_protegidas and not obtener_sesion(self):
+            responder_json(
+                self,
+                {"estado": False, "mensaje": "Debe iniciar sesión para realizar esta operación."},
+                401
+            )
             return
 
         # ====================================================
