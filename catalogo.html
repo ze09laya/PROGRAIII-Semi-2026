@@ -1,30 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Catálogo | Akari Store</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
-
     <link rel="stylesheet" href="/css/catalogo.css">
 </head>
-
 <body>
 
-<!-- NAVEGACIÓN -->
 <nav class="navbar navbar-akari">
-    <div class="container py-2 d-flex justify-content-between align-items-center">
-
-        <a href="/index.html"
-           class="d-flex align-items-center gap-2 text-decoration-none">
-
-            <img src="/img/logo-akari.jpg"
-                 class="logo-akari"
-                 alt="Logo Akari Store">
-
+    <div class="container py-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <a href="/index.html" class="d-flex align-items-center gap-2 text-decoration-none">
+            <img src="/img/logo-akari.jpg" class="logo-akari" alt="Logo Akari Store">
             <span class="fw-bold fs-4 text-dark">
                 AKARI <span class="texto-morado">STORE</span>
             </span>
@@ -33,111 +24,134 @@
         <div class="d-flex align-items-center flex-wrap gap-3">
             <span id="nombreUsuario" class="text-secondary small"></span>
             <a href="/index.html">Inicio</a>
-
-            <button id="btnCerrar"
-                    class="btn btn-outline-dark btn-sm"
-                    type="button">
+            <button id="btnCerrar" class="btn btn-outline-dark btn-sm" type="button">
                 Cerrar sesión
             </button>
         </div>
     </div>
 </nav>
 
-
-<!-- CONTENIDO -->
 <main class="container py-5">
 
     <div class="text-center mb-4">
         <h1 class="titulo">Nuestro catálogo</h1>
-        <p class="text-secondary">
-            Camisas, termos y cuadros personalizados
-        </p>
-        <p class="text-secondary">
-            Encuentra diseños únicos para ti.
-        </p>
+        <p class="text-secondary mb-1">Camisas, termos y cuadros personalizados</p>
+        <p class="text-secondary">Encuentra diseños únicos para ti.</p>
     </div>
 
-
-    <!-- ADMINISTRACIÓN -->
+    <!-- BOTONES DE ADMINISTRACIÓN -->
     <div id="panelAdministrador" class="mb-4 text-center" style="display:none">
         <button id="btnNuevo" class="btn btn-akari" type="button">
             + Agregar producto
         </button>
+        <button id="btnAdministrarCategorias" class="btn btn-outline-dark" type="button">
+            Administrar categorías
+        </button>
     </div>
 
-
-    <!-- FORMULARIO -->
-    <section id="formularioProducto" class="card border-0 shadow-sm mb-4">
+    <!-- ADMINISTRACIÓN DE CATEGORÍAS -->
+    <section id="panelCategorias" class="card border-0 shadow-sm mb-4" style="display:none">
         <div class="card-body p-4">
+            <h4 class="mb-3">Administrar categorías</h4>
+            <p class="text-secondary">
+                Selecciona un tipo de producto para ver solamente sus categorías.
+            </p>
 
+            <form id="formCategoria" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <label for="tipoCategoriaAdmin" class="form-label">
+                        Tipo de producto
+                    </label>
+                    <select id="tipoCategoriaAdmin" class="form-select" required>
+                        <option value="Camisas">Camisas</option>
+                        <option value="Termos">Termos</option>
+                        <option value="Cuadros personalizados">Cuadros personalizados</option>
+                    </select>
+                </div>
+
+                <div class="col-md-5">
+                    <label for="nombreCategoriaAdmin" class="form-label">
+                        Nombre de la categoría
+                    </label>
+                    <input id="nombreCategoriaAdmin" class="form-control"
+                           maxlength="100" placeholder="Ejemplo: Videojuegos" required>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button id="btnGuardarCategoria" class="btn btn-akari w-100" type="submit">
+                        Agregar
+                    </button>
+                    <button id="btnCancelarEdicionCategoria"
+                            class="btn btn-secondary w-100 ms-2"
+                            type="button" hidden>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+
+            <div class="border rounded p-3">
+                <h6 id="tituloListaCategorias" class="mb-3">Categorías de Camisas</h6>
+                <div id="listaCategoriasAdmin"></div>
+            </div>
+
+            <button id="btnCerrarCategorias" type="button" class="btn btn-secondary mt-3">
+                Cerrar administración
+            </button>
+        </div>
+    </section>
+
+    <!-- FORMULARIO DE PRODUCTOS -->
+    <section id="formularioProducto" class="card border-0 shadow-sm mb-4" style="display:none">
+        <div class="card-body p-4">
             <h4 id="tituloFormulario" class="mb-3">Agregar producto</h4>
 
             <form id="formProducto" enctype="multipart/form-data">
                 <input type="hidden" id="idProducto" name="id_producto">
 
                 <div class="row g-3">
-
                     <div class="col-md-6">
-                        <label for="nombre" class="form-label">
-                            Nombre del producto
-                        </label>
-                        <input id="nombre" name="nombre"
-                               class="form-control" maxlength="150" required>
+                        <label for="nombre" class="form-label">Nombre del producto</label>
+                        <input id="nombre" name="nombre" class="form-control"
+                               maxlength="150" required>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="precio" class="form-label">
-                            Precio ($)
-                        </label>
+                        <label for="precio" class="form-label">Precio ($)</label>
                         <input id="precio" name="precio" type="number"
-                               min="0.01" step="0.01"
-                               class="form-control" required>
+                               min="0.01" step="0.01" class="form-control" required>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="tipo_producto" class="form-label">
-                            Tipo de producto
-                        </label>
+                        <label for="tipo_producto" class="form-label">Tipo de producto</label>
                         <select id="tipo_producto" name="tipo_producto"
                                 class="form-select" required>
                             <option value="">Seleccione un tipo</option>
                             <option value="Camisas">Camisas</option>
                             <option value="Termos">Termos</option>
-                            <option value="Cuadros personalizados">
-                                Cuadros personalizados
-                            </option>
+                            <option value="Cuadros personalizados">Cuadros personalizados</option>
                         </select>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="categoria" class="form-label">
-                            Categoría del diseño
-                        </label>
-                        <select id="categoria" name="categoria"
-                                class="form-select" required disabled>
+                        <label for="categoria" class="form-label">Categoría del diseño</label>
+                        <select id="categoria" name="categoria" class="form-select" required disabled>
                             <option value="">Primero seleccione un tipo</option>
                         </select>
                     </div>
 
                     <div class="col-12">
-                        <label for="descripcion" class="form-label">
-                            Descripción
-                        </label>
-                        <textarea id="descripcion" name="descripcion"
-                                  class="form-control" rows="3" maxlength="2000"
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" class="form-control"
+                                  rows="3" maxlength="2000"
                                   placeholder="Describe el diseño y sus detalles."></textarea>
                     </div>
 
                     <div class="col-md-8">
-                        <label for="imagen" class="form-label">
-                            Imagen del producto
-                        </label>
-                        <input id="imagen" name="imagen" type="file"
-                               class="form-control"
+                        <label for="imagen" class="form-label">Imagen del producto</label>
+                        <input id="imagen" name="imagen" type="file" class="form-control"
                                accept="image/jpeg,image/png,image/webp">
                         <small class="text-secondary">
-                            JPG, PNG o WEBP. Máximo 5 MB.
-                            Al editar puedes dejarlo vacío para conservar la imagen.
+                            JPG, PNG o WEBP. Máximo 5 MB. Al editar, déjalo vacío para conservar la imagen.
                         </small>
                     </div>
 
@@ -145,19 +159,15 @@
                         <div class="form-check mb-2">
                             <input id="activo" name="activo" type="checkbox"
                                    class="form-check-input" checked>
-                            <label for="activo" class="form-check-label">
-                                Producto activo
-                            </label>
+                            <label for="activo" class="form-check-label">Producto activo</label>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="mt-4 d-flex flex-wrap gap-2">
                     <button type="submit" class="btn btn-akari" id="btnGuardar">
                         Guardar producto
                     </button>
-
                     <button type="button" id="btnCancelar" class="btn btn-secondary">
                         Cancelar
                     </button>
@@ -166,125 +176,112 @@
         </div>
     </section>
 
-
-    <!-- MENSAJES -->
-    <div id="mensaje" class="alert d-none" role="alert"
-         aria-live="polite"></div>
-
+    <div id="mensaje" class="alert d-none" role="alert" aria-live="polite"></div>
 
     <!-- BÚSQUEDA Y FILTROS -->
     <section class="filtros-catalogo mb-4">
-
         <h5 class="mb-3">Buscar productos</h5>
 
         <div class="row g-3">
-
             <div class="col-12">
-                <label for="busqueda" class="form-label">
-                    Nombre o descripción
-                </label>
+                <label for="busqueda" class="form-label">Nombre o descripción</label>
                 <input id="busqueda" type="search" class="form-control"
                        placeholder="Ejemplo: Goku, Kuromi, Michael Jackson...">
             </div>
 
             <div class="col-md-4">
-                <label for="filtroTipo" class="form-label">
-                    Tipo de producto
-                </label>
+                <label for="filtroTipo" class="form-label">Tipo de producto</label>
                 <select id="filtroTipo" class="form-select">
                     <option value="">Todos los tipos</option>
                     <option value="Camisas">Camisas</option>
                     <option value="Termos">Termos</option>
-                    <option value="Cuadros personalizados">
-                        Cuadros personalizados
-                    </option>
+                    <option value="Cuadros personalizados">Cuadros personalizados</option>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <label for="filtroCategoria" class="form-label">
-                    Categoría
-                </label>
+                <label for="filtroCategoria" class="form-label">Categoría</label>
                 <select id="filtroCategoria" class="form-select">
                     <option value="">Todas las categorías</option>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <label for="filtroEstado" class="form-label">
-                    Disponibilidad
-                </label>
+                <label for="filtroEstado" class="form-label">Disponibilidad</label>
                 <select id="filtroEstado" class="form-select">
                     <option value="activos">Productos disponibles</option>
+                    <option value="inactivos">Productos inactivos</option>
                     <option value="todos">Todos los productos</option>
                 </select>
             </div>
 
             <div class="col-12 text-end">
-                <button id="btnLimpiarFiltros"
-                        class="btn btn-outline-secondary btn-sm"
+                <button id="btnLimpiarFiltros" class="btn btn-outline-secondary btn-sm"
                         type="button">
                     Limpiar filtros
                 </button>
             </div>
-
         </div>
     </section>
 
-
-    <!-- RESULTADOS -->
-    <div id="resumenResultados"
-         class="text-secondary small mb-3"
-         aria-live="polite"></div>
-
-    <div id="cargando" class="text-center py-4">
-        Cargando productos...
-    </div>
-
+    <div id="resumenResultados" class="text-secondary small mb-3" aria-live="polite"></div>
+    <div id="cargando" class="text-center py-4">Cargando productos...</div>
     <div id="catalogo" class="row g-4"></div>
 
     <div id="sinProductos" class="text-center text-secondary py-4" hidden>
         <h5>No se encontraron productos.</h5>
         <p>Prueba con otro nombre, tipo de producto o categoría.</p>
     </div>
-
 </main>
 
-
-<!-- PIE DE PÁGINA -->
 <footer class="footer-catalogo text-center py-4">
     <p class="mb-1">Akari Store</p>
     <p class="mb-0">Camisas, termos y cuadros personalizados.</p>
 </footer>
 
-
-<!-- JAVASCRIPT -->
 <script>
 "use strict";
 
-const rol = (localStorage.getItem("rol") || "").trim().toLowerCase();
-const nombre = localStorage.getItem("nombre") ||
-               localStorage.getItem("usuario") || "";
+/* =========================================
+   SESIÓN
+========================================= */
 
-const puedeAdministrar =
-    rol === "administrador" || rol === "empleado";
+const rol = (localStorage.getItem("rol") || "").trim().toLowerCase();
+const nombre = localStorage.getItem("nombre") || localStorage.getItem("usuario") || "";
+
+const puedeAdministrar = rol === "administrador" || rol === "empleado";
 
 document.getElementById("nombreUsuario").textContent = nombre;
 document.getElementById("panelAdministrador").style.display =
     puedeAdministrar ? "block" : "none";
 
+/* =========================================
+   ELEMENTOS Y VARIABLES
+========================================= */
+
 const catalogo = document.getElementById("catalogo");
 const formulario = document.getElementById("formularioProducto");
 const formProducto = document.getElementById("formProducto");
 const mensaje = document.getElementById("mensaje");
+
 const selectorTipo = document.getElementById("tipo_producto");
 const selectorCategoria = document.getElementById("categoria");
+
 const filtroTipo = document.getElementById("filtroTipo");
 const filtroCategoria = document.getElementById("filtroCategoria");
 
-let productos = [];
+const selectorTipoCategoriaAdmin =
+    document.getElementById("tipoCategoriaAdmin");
 
-const categoriasPorTipo = {
+let productos = [];
+let categoriaEnEdicion = null;
+
+/* =========================================
+   CATEGORÍAS
+   Se almacenan en localStorage del navegador.
+========================================= */
+
+const CATEGORIAS_INICIALES = {
     "Camisas": [
         "Anime", "Cantantes", "Parejas", "Personajes",
         "Nombres personalizados", "Diseños personalizados", "Otros"
@@ -298,6 +295,53 @@ const categoriasPorTipo = {
         "Diseños personalizados", "Otros"
     ]
 };
+
+const CLAVE_CATEGORIAS = "akari_categorias_v1";
+
+function copiarCategorias(datos) {
+    return JSON.parse(JSON.stringify(datos));
+}
+
+function cargarCategoriasGuardadas() {
+    try {
+        const guardadas = localStorage.getItem(CLAVE_CATEGORIAS);
+
+        if (!guardadas) {
+            return copiarCategorias(CATEGORIAS_INICIALES);
+        }
+
+        const datos = JSON.parse(guardadas);
+
+        if (!datos || typeof datos !== "object" || Array.isArray(datos)) {
+            return copiarCategorias(CATEGORIAS_INICIALES);
+        }
+
+        for (const tipo of Object.keys(CATEGORIAS_INICIALES)) {
+            if (!Array.isArray(datos[tipo])) {
+                datos[tipo] = [...CATEGORIAS_INICIALES[tipo]];
+            }
+
+            datos[tipo] = datos[tipo].filter(
+                categoria => typeof categoria === "string"
+            );
+        }
+
+        return datos;
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+        return copiarCategorias(CATEGORIAS_INICIALES);
+    }
+}
+
+let categoriasPorTipo = cargarCategoriasGuardadas();
+
+function guardarCategoriasEnNavegador() {
+    localStorage.setItem(CLAVE_CATEGORIAS, JSON.stringify(categoriasPorTipo));
+}
+
+/* =========================================
+   MENSAJES Y UTILIDADES
+========================================= */
 
 function mostrarMensaje(texto, tipo = "danger") {
     mensaje.textContent = texto;
@@ -319,6 +363,219 @@ function escapar(texto) {
     })[letra]);
 }
 
+/* =========================================
+   ADMINISTRAR CATEGORÍAS
+========================================= */
+
+// Solo muestra las categorías del tipo elegido en el selector.
+function renderizarListaCategorias() {
+    const lista = document.getElementById("listaCategoriasAdmin");
+    const tipo = selectorTipoCategoriaAdmin.value;
+    const categorias = categoriasPorTipo[tipo] || [];
+
+    lista.innerHTML = "";
+    document.getElementById("tituloListaCategorias").textContent =
+        "Categorías de " + tipo;
+
+    if (categorias.length === 0) {
+        const vacio = document.createElement("p");
+        vacio.className = "text-secondary mb-0";
+        vacio.textContent = "No hay categorías registradas para este tipo.";
+        lista.appendChild(vacio);
+        return;
+    }
+
+    categorias.forEach(categoria => {
+        const fila = document.createElement("div");
+        fila.className =
+            "d-flex justify-content-between align-items-center flex-wrap gap-2 border rounded p-3 mb-2";
+
+        const texto = document.createElement("span");
+        texto.textContent = categoria;
+
+        const acciones = document.createElement("div");
+        acciones.className = "d-flex gap-2";
+
+        const botonEditar = document.createElement("button");
+        botonEditar.type = "button";
+        botonEditar.className = "btn btn-outline-primary btn-sm";
+        botonEditar.textContent = "Editar";
+
+        botonEditar.addEventListener("click", () => {
+            categoriaEnEdicion = { tipo, nombre: categoria };
+
+            selectorTipoCategoriaAdmin.value = tipo;
+            document.getElementById("nombreCategoriaAdmin").value = categoria;
+            document.getElementById("btnGuardarCategoria").textContent = "Guardar cambios";
+            document.getElementById("btnCancelarEdicionCategoria").hidden = false;
+
+            ocultarMensaje();
+            document.getElementById("nombreCategoriaAdmin").focus();
+        });
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.type = "button";
+        botonEliminar.className = "btn btn-outline-danger btn-sm";
+        botonEliminar.textContent = "Eliminar";
+
+        botonEliminar.addEventListener("click", () => {
+            if (!puedeAdministrar) return;
+
+            if (!confirm(`¿Eliminar la categoría "${categoria}" de "${tipo}"?`)) {
+                return;
+            }
+
+            const copiaAnterior = copiarCategorias(categoriasPorTipo);
+
+            categoriasPorTipo[tipo] = categoriasPorTipo[tipo].filter(
+                elemento => elemento !== categoria
+            );
+
+            try {
+                guardarCategoriasEnNavegador();
+            } catch (error) {
+                categoriasPorTipo = copiaAnterior;
+                mostrarMensaje("No se pudieron guardar los cambios en el navegador.");
+                return;
+            }
+
+            if (
+                categoriaEnEdicion &&
+                categoriaEnEdicion.tipo === tipo &&
+                categoriaEnEdicion.nombre === categoria
+            ) {
+                cancelarEdicionCategoria();
+            }
+
+            actualizarCategoriasFormulario();
+            actualizarFiltroCategorias();
+            renderizarListaCategorias();
+
+            mostrarMensaje(
+                "Categoría eliminada. Los productos existentes no se borraron.",
+                "success"
+            );
+        });
+
+        acciones.append(botonEditar, botonEliminar);
+        fila.append(texto, acciones);
+        lista.appendChild(fila);
+    });
+}
+
+function cancelarEdicionCategoria() {
+    categoriaEnEdicion = null;
+    document.getElementById("formCategoria").reset();
+    document.getElementById("btnGuardarCategoria").textContent = "Agregar";
+    document.getElementById("btnCancelarEdicionCategoria").hidden = true;
+}
+
+selectorTipoCategoriaAdmin.addEventListener("change", () => {
+    // Al cambiar el tipo, cancelar una edición anterior y filtrar la lista.
+    cancelarEdicionCategoria();
+    ocultarMensaje();
+    renderizarListaCategorias();
+});
+
+document.getElementById("formCategoria").addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (!puedeAdministrar) {
+        mostrarMensaje("No tienes permiso para administrar categorías.");
+        return;
+    }
+
+    const tipo = selectorTipoCategoriaAdmin.value;
+    const nombreNuevo = document.getElementById("nombreCategoriaAdmin")
+        .value.trim();
+
+    if (!nombreNuevo) {
+        mostrarMensaje("Escribe el nombre de la categoría.");
+        return;
+    }
+
+    if (!categoriasPorTipo[tipo]) {
+        mostrarMensaje("Selecciona un tipo de producto válido.");
+        return;
+    }
+
+    const existeDuplicada = categoriasPorTipo[tipo].some(categoria =>
+        categoria.toLowerCase() === nombreNuevo.toLowerCase() &&
+        !(
+            categoriaEnEdicion &&
+            categoriaEnEdicion.tipo === tipo &&
+            categoriaEnEdicion.nombre === categoria
+        )
+    );
+
+    if (existeDuplicada) {
+        mostrarMensaje("Ya existe una categoría con ese nombre para este tipo.");
+        return;
+    }
+
+    const copiaAnterior = copiarCategorias(categoriasPorTipo);
+
+    if (categoriaEnEdicion) {
+        const tipoAnterior = categoriaEnEdicion.tipo;
+        const nombreAnterior = categoriaEnEdicion.nombre;
+
+        categoriasPorTipo[tipoAnterior] =
+            categoriasPorTipo[tipoAnterior].filter(
+                categoria => categoria !== nombreAnterior
+            );
+    }
+
+    if (!categoriasPorTipo[tipo].includes(nombreNuevo)) {
+        categoriasPorTipo[tipo].push(nombreNuevo);
+    }
+
+    try {
+        guardarCategoriasEnNavegador();
+    } catch (error) {
+        categoriasPorTipo = copiaAnterior;
+        mostrarMensaje("No se pudieron guardar los cambios en el navegador.");
+        renderizarListaCategorias();
+        return;
+    }
+
+    cancelarEdicionCategoria();
+    actualizarCategoriasFormulario();
+    actualizarFiltroCategorias();
+    renderizarListaCategorias();
+
+    mostrarMensaje("Categoría guardada correctamente en este navegador.", "success");
+});
+
+document.getElementById("btnCancelarEdicionCategoria").addEventListener(
+    "click", () => {
+        cancelarEdicionCategoria();
+        renderizarListaCategorias();
+        ocultarMensaje();
+    }
+);
+
+document.getElementById("btnAdministrarCategorias").addEventListener("click", () => {
+    if (!puedeAdministrar) return;
+
+    ocultarMensaje();
+    document.getElementById("panelCategorias").style.display = "block";
+    renderizarListaCategorias();
+
+    document.getElementById("panelCategorias").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+});
+
+document.getElementById("btnCerrarCategorias").addEventListener("click", () => {
+    document.getElementById("panelCategorias").style.display = "none";
+    cancelarEdicionCategoria();
+});
+
+/* =========================================
+   SELECTORES DE CATEGORÍAS
+========================================= */
+
 function actualizarCategoriasFormulario(categoriaActual = "") {
     const categorias = categoriasPorTipo[selectorTipo.value] || [];
 
@@ -328,7 +585,7 @@ function actualizarCategoriasFormulario(categoriaActual = "") {
     inicial.value = "";
     inicial.textContent = categorias.length
         ? "Seleccione una categoría"
-        : "Primero seleccione un tipo";
+        : "No hay categorías para este tipo";
 
     selectorCategoria.appendChild(inicial);
 
@@ -339,18 +596,23 @@ function actualizarCategoriasFormulario(categoriaActual = "") {
         selectorCategoria.appendChild(opcion);
     });
 
-    selectorCategoria.disabled = categorias.length === 0;
-
-    if (categorias.includes(categoriaActual)) {
-        selectorCategoria.value = categoriaActual;
+    // Conserva visible una categoría anterior al editar un producto.
+    if (categoriaActual && !categorias.includes(categoriaActual)) {
+        const opcionAntigua = document.createElement("option");
+        opcionAntigua.value = categoriaActual;
+        opcionAntigua.textContent = categoriaActual + " (categoría anterior)";
+        selectorCategoria.appendChild(opcionAntigua);
     }
+
+    selectorCategoria.disabled = categorias.length === 0 && !categoriaActual;
+    selectorCategoria.value = categoriaActual || "";
 }
 
 function actualizarFiltroCategorias(categoriaActual = "") {
     const tipo = filtroTipo.value;
 
-    const categorias = tipo && categoriasPorTipo[tipo]
-        ? categoriasPorTipo[tipo]
+    const categorias = tipo
+        ? (categoriasPorTipo[tipo] || [])
         : [...new Set(Object.values(categoriasPorTipo).flat())];
 
     filtroCategoria.innerHTML = "";
@@ -371,6 +633,10 @@ function actualizarFiltroCategorias(categoriaActual = "") {
         ? categoriaActual
         : "";
 }
+
+/* =========================================
+   FORMULARIO DE PRODUCTOS
+========================================= */
 
 function abrirFormulario(producto = null) {
     if (!puedeAdministrar) return;
@@ -395,9 +661,7 @@ function abrirFormulario(producto = null) {
 
     selectorTipo.value = producto ? (producto.tipo_producto || "") : "";
 
-    actualizarCategoriasFormulario(
-        producto ? (producto.categoria || "") : ""
-    );
+    actualizarCategoriasFormulario(producto ? (producto.categoria || "") : "");
 
     document.getElementById("tituloFormulario").textContent =
         producto ? "Editar producto" : "Agregar producto";
@@ -419,14 +683,25 @@ function cerrarFormulario() {
     selectorCategoria.disabled = true;
 }
 
-function dibujarCatalogo() {
-    const busqueda = document.getElementById("busqueda")
-        .value.trim().toLowerCase();
+document.getElementById("btnNuevo").addEventListener("click", () => {
+    abrirFormulario();
+});
 
+document.getElementById("btnCancelar").addEventListener("click", cerrarFormulario);
+
+selectorTipo.addEventListener("change", () => {
+    actualizarCategoriasFormulario();
+});
+
+/* =========================================
+   MOSTRAR CATÁLOGO
+========================================= */
+
+function dibujarCatalogo() {
+    const busqueda = document.getElementById("busqueda").value.trim().toLowerCase();
     const tipoSeleccionado = filtroTipo.value;
     const categoriaSeleccionada = filtroCategoria.value;
-    const verTodos =
-        document.getElementById("filtroEstado").value === "todos";
+    const estadoSeleccionado = document.getElementById("filtroEstado").value;
 
     const lista = productos.filter(p => {
         const activo = Number(p.activo) === 1;
@@ -438,11 +713,27 @@ function dibujarCatalogo() {
             p.categoria
         ].map(valor => String(valor || "").toLowerCase()).join(" ");
 
-        return texto.includes(busqueda) &&
-            (!tipoSeleccionado || p.tipo_producto === tipoSeleccionado) &&
-            (!categoriaSeleccionada || p.categoria === categoriaSeleccionada) &&
-            (puedeAdministrar || activo);
-           
+        const coincideTexto = texto.includes(busqueda);
+        const coincideTipo =
+            !tipoSeleccionado || p.tipo_producto === tipoSeleccionado;
+        const coincideCategoria =
+            !categoriaSeleccionada || p.categoria === categoriaSeleccionada;
+
+        // Los clientes solo pueden ver productos activos.
+        // El administrador o empleado puede ver activos, inactivos o todos.
+        let coincideEstado;
+
+        if (!puedeAdministrar) {
+            coincideEstado = activo;
+        } else if (estadoSeleccionado === "todos") {
+            coincideEstado = true;
+        } else if (estadoSeleccionado === "inactivos") {
+            coincideEstado = !activo;
+        } else {
+            coincideEstado = activo;
+        }
+
+        return coincideTexto && coincideTipo && coincideCategoria && coincideEstado;
     });
 
     catalogo.innerHTML = "";
@@ -458,10 +749,12 @@ function dibujarCatalogo() {
         tarjeta.className = "col-sm-6 col-lg-4 col-xl-3";
 
         const imagen = p.imagen
-            ? (String(p.imagen).startsWith("/") ||
-               /^https?:\/\//i.test(String(p.imagen))
-                ? String(p.imagen)
-                : "/img/productos/" + String(p.imagen))
+            ? (
+                String(p.imagen).startsWith("/") ||
+                /^https?:\/\//i.test(String(p.imagen))
+                    ? String(p.imagen)
+                    : "/img/productos/" + String(p.imagen)
+            )
             : "/img/productos/sin-imagen.jpg";
 
         const etiquetas = [p.tipo_producto, p.categoria]
@@ -475,7 +768,7 @@ function dibujarCatalogo() {
         );
 
         tarjeta.innerHTML = `
-            <div class="card producto-card shadow-sm">
+            <div class="card producto-card shadow-sm h-100">
                 <img src="${escapar(imagen)}"
                      class="card-img-top"
                      alt="${escapar(p.nombre)}"
@@ -484,7 +777,6 @@ function dibujarCatalogo() {
 
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${escapar(p.nombre)}</h5>
-
                     <div class="mb-2">${etiquetas}</div>
 
                     <p class="card-text text-secondary">
@@ -508,20 +800,17 @@ function dibujarCatalogo() {
                     ${puedeAdministrar ? `
                         <div class="d-flex flex-wrap gap-1 mt-2">
                             <button type="button" class="btn btn-outline-dark btn-sm"
-                                    data-accion="editar"
-                                    data-id="${Number(p.id_producto)}">
+                                    data-accion="editar" data-id="${Number(p.id_producto)}">
                                 Editar
                             </button>
 
                             <button type="button" class="btn btn-outline-primary btn-sm"
-                                    data-accion="estado"
-                                    data-id="${Number(p.id_producto)}">
+                                    data-accion="estado" data-id="${Number(p.id_producto)}">
                                 ${Number(p.activo) === 1 ? "Desactivar" : "Activar"}
                             </button>
 
                             <button type="button" class="btn btn-danger btn-sm"
-                                    data-accion="eliminar"
-                                    data-id="${Number(p.id_producto)}">
+                                    data-accion="eliminar" data-id="${Number(p.id_producto)}">
                                 Eliminar
                             </button>
                         </div>
@@ -533,6 +822,10 @@ function dibujarCatalogo() {
     });
 }
 
+/* =========================================
+   CARGAR PRODUCTOS DEL SERVIDOR
+========================================= */
+
 async function cargarProductos() {
     const cargando = document.getElementById("cargando");
     cargando.style.display = "block";
@@ -541,40 +834,32 @@ async function cargarProductos() {
     try {
         const respuesta = await fetch("/productos", {
             method: "GET",
-            cache: "no-store"
+            cache: "no-store",
+            credentials: "same-origin"
         });
 
         const datos = await respuesta.json();
 
         if (!respuesta.ok || datos.estado === false) {
-            throw new Error(datos.mensaje || datos.error ||
-                "No se pudieron cargar los productos.");
+            throw new Error(datos.mensaje || datos.error || "No se pudieron cargar los productos.");
         }
 
-        productos = Array.isArray(datos)
-            ? datos
-            : (datos.productos || []);
+        productos = Array.isArray(datos) ? datos : (datos.productos || []);
 
         cargando.style.display = "none";
         dibujarCatalogo();
-
     } catch (error) {
         cargando.style.display = "none";
         mostrarMensaje("Error al cargar el catálogo: " + error.message);
     }
 }
 
-document.getElementById("btnNuevo").addEventListener("click", () => {
-    abrirFormulario();
-});
-
-document.getElementById("btnCancelar").addEventListener("click", cerrarFormulario);
-
-selectorTipo.addEventListener("change", () => {
-    actualizarCategoriasFormulario();
-});
+/* =========================================
+   EVENTOS DE FILTROS
+========================================= */
 
 document.getElementById("busqueda").addEventListener("input", dibujarCatalogo);
+
 document.getElementById("filtroEstado").addEventListener("change", dibujarCatalogo);
 
 filtroTipo.addEventListener("change", () => {
@@ -590,9 +875,14 @@ document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
     actualizarFiltroCategorias();
     filtroCategoria.value = "";
     document.getElementById("filtroEstado").value = "activos";
+
     ocultarMensaje();
     dibujarCatalogo();
 });
+
+/* =========================================
+   GUARDAR PRODUCTO
+========================================= */
 
 formProducto.addEventListener("submit", async event => {
     event.preventDefault();
@@ -605,11 +895,11 @@ formProducto.addEventListener("submit", async event => {
     const id = document.getElementById("idProducto").value;
     const datos = new FormData(formProducto);
 
-    datos.set("activo",
-        document.getElementById("activo").checked ? "1" : "0");
+    datos.set("activo", document.getElementById("activo").checked ? "1" : "0");
 
     const url = id ? "/productos/editar" : "/productos";
     const botonGuardar = document.getElementById("btnGuardar");
+    const textoOriginal = id ? "Guardar cambios" : "Guardar producto";
 
     botonGuardar.disabled = true;
     botonGuardar.textContent = "Guardando...";
@@ -617,30 +907,30 @@ formProducto.addEventListener("submit", async event => {
     try {
         const respuesta = await fetch(url, {
             method: "POST",
-            body: datos
+            body: datos,
+            credentials: "same-origin"
         });
 
         const resultado = await respuesta.json();
 
         if (!respuesta.ok || resultado.estado === false) {
-            throw new Error(resultado.mensaje || resultado.error ||
-                "No se pudo guardar el producto.");
+            throw new Error(resultado.mensaje || resultado.error || "No se pudo guardar el producto.");
         }
 
         cerrarFormulario();
-        mostrarMensaje(resultado.mensaje || "Producto guardado correctamente.",
-            "success");
-
+        mostrarMensaje(resultado.mensaje || "Producto guardado correctamente.", "success");
         await cargarProductos();
-
     } catch (error) {
         mostrarMensaje("Error al guardar: " + error.message);
-
     } finally {
         botonGuardar.disabled = false;
-        botonGuardar.textContent = "Guardar producto";
+        botonGuardar.textContent = textoOriginal;
     }
 });
+
+/* =========================================
+   ELIMINAR PRODUCTO
+========================================= */
 
 async function eliminarProducto(id) {
     if (!confirm("¿Estás seguro de que deseas eliminar este producto?")) {
@@ -651,36 +941,33 @@ async function eliminarProducto(id) {
         const respuesta = await fetch("/productos/eliminar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
             body: JSON.stringify({ id_producto: id })
         });
 
         const resultado = await respuesta.json();
 
         if (!respuesta.ok || resultado.estado === false) {
-            throw new Error(resultado.mensaje || resultado.error ||
-                "No se pudo eliminar el producto.");
+            throw new Error(resultado.mensaje || resultado.error || "No se pudo eliminar el producto.");
         }
 
-        mostrarMensaje(resultado.mensaje || "Producto eliminado correctamente.",
-            "success");
-
+        mostrarMensaje(resultado.mensaje || "Producto eliminado correctamente.", "success");
         await cargarProductos();
-
     } catch (error) {
         mostrarMensaje("Error al eliminar: " + error.message);
     }
 }
 
+/* =========================================
+   BOTONES DE PRODUCTOS
+========================================= */
+
 catalogo.addEventListener("click", async event => {
     const boton = event.target.closest("button[data-accion]");
-
     if (!boton || !puedeAdministrar) return;
 
     const id = Number(boton.dataset.id);
-    const producto = productos.find(
-        p => Number(p.id_producto) === id
-    );
-
+    const producto = productos.find(p => Number(p.id_producto) === id);
     if (!producto) return;
 
     if (boton.dataset.accion === "editar") {
@@ -706,6 +993,7 @@ catalogo.addEventListener("click", async event => {
             const respuesta = await fetch("/productos/estado", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
                 body: JSON.stringify({
                     id_producto: id,
                     activo: nuevoEstado
@@ -715,26 +1003,33 @@ catalogo.addEventListener("click", async event => {
             const datos = await respuesta.json();
 
             if (!respuesta.ok || datos.estado === false) {
-                throw new Error(datos.mensaje || datos.error ||
-                    "No se pudo cambiar el estado.");
+                throw new Error(datos.mensaje || datos.error || "No se pudo cambiar el estado.");
             }
 
-            mostrarMensaje(datos.mensaje || "Estado actualizado correctamente.",
-                "success");
+            mostrarMensaje(datos.mensaje || "Estado actualizado correctamente.", "success");
 
+            // Mostrar todos después del cambio para que el producto
+            // siga visible y se pueda volver a activar o desactivar.
+            document.getElementById("filtroEstado").value = "todos";
             await cargarProductos();
-
         } catch (error) {
             mostrarMensaje(error.message);
         }
     }
 });
 
+/* =========================================
+   CERRAR SESIÓN
+========================================= */
+
 document.getElementById("btnCerrar").addEventListener("click", async () => {
     try {
-        await fetch("/logout", { method: "POST" });
+        await fetch("/logout", {
+            method: "POST",
+            credentials: "same-origin"
+        });
     } catch (error) {
-        console.error("Error al cerrar la sesión:", error);
+        console.error("Error al cerrar sesión:", error);
     }
 
     localStorage.removeItem("usuario");
@@ -744,10 +1039,15 @@ document.getElementById("btnCerrar").addEventListener("click", async () => {
     window.location.replace("/login.html");
 });
 
+/* =========================================
+   INICIALIZACIÓN
+========================================= */
+
 if (!rol) {
     window.location.replace("/login.html");
 } else {
     actualizarFiltroCategorias();
+    renderizarListaCategorias();
     cargarProductos();
 }
 </script>

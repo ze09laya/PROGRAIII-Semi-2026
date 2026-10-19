@@ -638,3 +638,28 @@ a:focus-visible {
         animation-duration: 0.01ms !important;
     }
 }
+
+/* Botón Cerrar Sesión y AGREGAR Estilo Morado Urbano */
+#btnCerrar,
+.btn-cerrar,
+#btnGuardarCategoria {
+    background-color: #7c3aed !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    padding: 10px 22px !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35) !important;
+    transition: all 0.25s ease !important;
+}
+
+#btnCerrar:hover,
+.btn-cerrar:hover,
+#btnGuardarCategoria:hover {
+    background-color: #6d28d9 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5) !important;
+}
