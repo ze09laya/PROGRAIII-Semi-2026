@@ -2,11 +2,13 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib import parse 
 from urllib.parse import urlparse, parse_qs
 import crud_clientes
+import crud_productos
 
 import json
 
 port = 3000
 crudClientes = crud_clientes.crud_clientes()
+crudProductos = crud_productos.crud_productos()
 
 class miServidor(SimpleHTTPRequestHandler):
     def do_POST(self):
@@ -15,7 +17,10 @@ class miServidor(SimpleHTTPRequestHandler):
         datos = datos.decode("utf-8")
         datos = parse.unquote(datos)
         datos = json.loads(datos)
-        respuesta = {'msg': crudClientes.administrar(datos)}
+        if datos["modulo"] == "cliente":
+            respuesta = {'msg': crudClientes.administrar(datos)}
+        elif datos["modulo"] == "producto":
+            respuesta = {'msg': crudProductos.administrar(datos)}
 
         self.send_response(200)
         self.send_header("Content-type","application/json")
@@ -25,7 +30,7 @@ class miServidor(SimpleHTTPRequestHandler):
     def do_GET(self):
         urlParse = urlparse(self.path)
         qs = parse_qs(urlParse.query)
-
+       
         if urlParse.path == "/clientes":
             buscar = qs.get('buscar', [''])[0]
             print(buscar)
@@ -35,6 +40,14 @@ class miServidor(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(datos).encode("utf-8"))
 
+        elif urlParse.path == "/productos":
+            buscar = qs.get('buscar', [''])[0]
+            datos = crudProductos.consultar(buscar)
+            self.send_response(200)
+            self.send_header("Content-type","text/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(datos).encode("utf-8"))
+        
         elif self.path == "/":
             self.path = "/index.html"
             return SimpleHTTPRequestHandler.do_GET(self)
