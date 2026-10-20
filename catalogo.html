@@ -1066,5 +1066,144 @@ if (!rol) {
 }
 </script>
 
+
+
+
+<!-- BOTÓN FLOTANTE DE AKARI IA -->
+<button
+    id="btnAkariIA"
+    class="boton-akari-ia"
+    type="button"
+    aria-label="Abrir asistente Akari IA"
+    title="Habla con Akari IA"
+>
+    <span class="gatito-ia">🐱</span>
+    <span class="texto-ia">Akari IA</span>
+</button>
+
+<!-- VENTANA DEL ASISTENTE -->
+<div id="ventanaAkariIA" class="ventana-akari-ia" hidden>
+    <div class="encabezado-ia">
+        <div>
+            <strong>🐱 Akari IA</strong>
+            <p>Asistente virtual de Akari Store</p>
+        </div>
+
+        <button id="cerrarAkariIA" type="button"
+                aria-label="Cerrar asistente">×</button>
+    </div>
+
+    <div id="contenidoAkariIA" class="contenido-ia" aria-live="polite">
+        <p>¡Hola! 💜 Soy Akari IA.</p>
+        <p>Puedo ayudarte a conocer los productos de nuestro catálogo.
+           ¿Qué te gustaría saber?</p>
+    </div>
+
+    <form id="formularioChatIA" class="formulario-chat-ia">
+        <input
+            id="entradaAkariIA"
+            type="text"
+            maxlength="1200"
+            placeholder="Escribe tu pregunta..."
+            aria-label="Escribe tu pregunta"
+            autocomplete="off"
+            required
+        >
+        <button id="enviarAkariIA" type="submit">Enviar</button>
+    </form>
+</div>
+
+<!-- FUNCIONAMIENTO DE AKARI IA -->
+<script>
+(() => {
+    const boton = document.getElementById("btnAkariIA");
+    const ventana = document.getElementById("ventanaAkariIA");
+    const cerrar = document.getElementById("cerrarAkariIA");
+    const contenido = document.getElementById("contenidoAkariIA");
+    const formulario = document.getElementById("formularioChatIA");
+    const entrada = document.getElementById("entradaAkariIA");
+    const enviar = document.getElementById("enviarAkariIA");
+
+    if (!boton || !ventana || !cerrar || !contenido ||
+        !formulario || !entrada || !enviar) {
+        console.error("Akari IA: falta uno o más elementos del chat.");
+        return;
+    }
+
+    boton.addEventListener("click", () => {
+        ventana.hidden = !ventana.hidden;
+
+        if (!ventana.hidden) {
+            entrada.focus();
+        }
+    });
+
+    cerrar.addEventListener("click", () => {
+        ventana.hidden = true;
+    });
+
+    function agregarMensaje(texto, tipo) {
+        const elemento = document.createElement("div");
+        elemento.className = "mensaje-ia " + tipo;
+        elemento.textContent = texto;
+        contenido.appendChild(elemento);
+        contenido.scrollTop = contenido.scrollHeight;
+        return elemento;
+    }
+
+    formulario.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+
+        const pregunta = entrada.value.trim();
+        if (!pregunta || enviar.disabled) return;
+
+        agregarMensaje(pregunta, "cliente");
+
+        entrada.value = "";
+        entrada.disabled = true;
+        enviar.disabled = true;
+        enviar.textContent = "...";
+
+        const esperando = agregarMensaje(
+            "Estoy preparando tu respuesta...",
+            "asistente"
+        );
+
+        try {
+            const respuesta = await fetch("/chat-ia", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify({ mensaje: pregunta })
+            });
+
+            const datos = await respuesta.json();
+
+            if (!respuesta.ok || datos.estado !== true) {
+                throw new Error(
+                    datos.mensaje || "No se pudo obtener una respuesta."
+                );
+            }
+
+            esperando.textContent = datos.respuesta;
+        } catch (error) {
+            console.error("Error de Akari IA:", error);
+            esperando.textContent =
+                "No pude responder en este momento. Comprueba que " +
+                "el servidor esté activo e inténtalo nuevamente.";
+        } finally {
+            entrada.disabled = false;
+            enviar.disabled = false;
+            enviar.textContent = "Enviar";
+            contenido.scrollTop = contenido.scrollHeight;
+            entrada.focus();
+        }
+    });
+})();
+</script>
+
+
 </body>
 </html>

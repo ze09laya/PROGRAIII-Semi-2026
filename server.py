@@ -7,6 +7,7 @@ import os
 import uuid
 import secrets
 from http.cookies import SimpleCookie
+from google import genai
 
 
 # ============================================================
@@ -14,6 +15,62 @@ from http.cookies import SimpleCookie
 # ============================================================
 
 PORT = 3000
+
+
+# ============================================================
+# CONFIGURACIÓN DE GEMINI
+# ============================================================
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = "gemini-3.8-flash"
+
+def responder_con_gemini(pregunta, productos):
+    if not GEMINI_API_KEY:
+        raise RuntimeError("Falta configurar GEMINI_API_KEY.")
+
+    cliente = genai.Client(api_key=GEMINI_API_KEY)
+
+    catalogo = json.dumps(
+        productos,
+        ensure_ascii=False,
+        default=str
+    )
+
+    instrucciones = f"""
+Eres el asistente virtual de Akari Store, una tienda de El Salvador
+que vende camisas estampadas, urbanas y oversize.
+
+Responde siempre en español, con amabilidad, claridad y mensajes
+relativamente breves.
+
+Ayuda a los clientes a conocer los productos y encontrar opciones.
+Utiliza los productos del catálogo que se te proporciona.
+
+No inventes precios, existencias, descuentos ni características.
+Si no encuentras un dato en el catálogo, indica que el cliente debe
+consultarlo con la tienda.
+
+Por ahora no proceses pedidos ni confirmes compras.
+No solicites contraseñas ni datos bancarios.
+
+CATÁLOGO ACTUAL:
+{catalogo}
+
+PREGUNTA DEL CLIENTE:
+{pregunta}
+"""
+
+    respuesta = cliente.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=instrucciones
+    )
+
+    texto = (respuesta.text or "").strip()
+
+    if not texto:
+        raise RuntimeError("Gemini no devolvió una respuesta.")
+
+    return texto
 
 SESIONES = {}
 
@@ -93,6 +150,7 @@ def responder_json(handler, datos, codigo=200, headers_extra=None):
 # LEER JSON
 # ============================================================
 
+
 def leer_json(handler):
     longitud = int(handler.headers.get("Content-Length", 0))
 
@@ -101,7 +159,16 @@ def leer_json(handler):
 
     cuerpo = handler.rfile.read(longitud)
 
-    return json.loads(cuerpo.decode("utf-8"))
+    codificacion = handler.headers.get_content_charset() or "utf-8"
+
+    try:
+        texto = cuerpo.decode(codificacion)
+        return json.loads(texto)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise ValueError(
+            "El cuerpo de la solicitud no contiene JSON válido en UTF-8."
+        )
+
 
 
 # ============================================================
@@ -316,6 +383,80 @@ class MiServidor(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         url = urlparse(self.path)
+
+
+                # ASISTENTE DE INTELIGENCIA ARTIFICIAL
+        if url.path == "/chat-ia":
+            conexion = None
+            cursor = None
+
+            try:
+                datos = leer_json(self)
+
+                pregunta = str(
+                    datos.get("mensaje", "")
+                ).strip()
+
+                if not pregunta:
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "Escribe una pregunta."
+                    }, 400)
+                    return
+
+                if len(pregunta) > 1200:
+                    responder_json(self, {
+                        "estado": False,
+                        "mensaje": "La pregunta es demasiado larga."
+                    }, 400)
+                    return
+
+                conexion = conectar_bd()
+                cursor = conexion.cursor(dictionary=True)
+
+                cursor.execute("""
+                    SELECT
+                        nombre,
+                        descripcion,
+                        precio,
+                        tipo_producto,
+                        categoria
+                    FROM productos
+                    WHERE activo = 1
+                    ORDER BY id_producto DESC
+                    LIMIT 100
+                """)
+
+                productos = cursor.fetchall()
+
+                respuesta = responder_con_gemini(
+                    pregunta,
+                    productos
+                )
+
+                responder_json(self, {
+                    "estado": True,
+                    "respuesta": respuesta
+                })
+
+            except Exception as error:
+                print("ERROR CHAT IA:", repr(error))
+
+                responder_json(self, {
+                    "estado": False,
+                    "mensaje": (
+                        "No pudimos responder en este momento. "
+                        "Inténtalo nuevamente."
+                    )
+                }, 500)
+
+            finally:
+                if cursor:
+                    cursor.close()
+                if conexion:
+                    conexion.close()
+
+            return
 
         # CERRAR SESIÓN
         if url.path == "/logout":

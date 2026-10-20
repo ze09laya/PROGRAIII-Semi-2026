@@ -663,3 +663,268 @@ a:focus-visible {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5) !important;
 }
+
+
+/* =========================================
+   AKARI IA - ASISTENTE FLOTANTE CON FORMA DE GATITO
+========================================= */
+
+.boton-akari-ia {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px 10px 14px;
+    
+    /* Forma estilizada de gatito en el botón */
+    border-radius: 25px 35px 25px 25px;
+    
+    background: #ffffff;
+    color: #0f172a;
+    font-family: 'Trebuchet MS', 'Segoe UI', -apple-system, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    
+    /* ORILLA Y RESPLANDOR MORADO */
+    border: 2px solid #7c3aed !important;
+    box-shadow: 
+        0 8px 25px -5px rgba(124, 58, 237, 0.35),
+        0 0 15px rgba(124, 58, 237, 0.25) !important;
+        
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.boton-akari-ia:hover {
+    transform: translateY(-4px) scale(1.04);
+    border-color: #9333ea !important;
+    box-shadow: 
+        0 14px 30px -5px rgba(124, 58, 237, 0.5),
+        0 0 25px rgba(124, 58, 237, 0.4) !important;
+}
+
+/* CONTENEDOR CIRCULAR CON ORILLA MORADA Y FORMA DE OREJITAS */
+.gatito-ia,
+.boton-akari-ia img {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    min-height: 46px !important;
+    object-fit: cover !important;
+    
+    /* Forma de orejita/gatito en el contenedor del logo */
+    border-radius: 50% 50% 45% 45% !important;
+    padding: 3px;
+    background: #ffffff;
+    
+    /* ORILLA MORADA DEL LOGO/GATITO */
+    border: 2px solid #7c3aed !important;
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.3) !important;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                border-color 0.4s ease !important;
+}
+
+.boton-akari-ia:hover .gatito-ia,
+.boton-akari-ia:hover img {
+    transform: scale(1.1) rotate(6deg);
+    border-color: #9333ea !important;
+}
+
+.texto-ia {
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+/* =========================================
+   VENTANA DE CHAT DE AKARI IA
+========================================= */
+
+.ventana-akari-ia[hidden] {
+    display: none !important;
+}
+
+.ventana-akari-ia {
+    position: fixed;
+    right: 24px;
+    bottom: 92px;
+    z-index: 1051;
+    display: flex;
+    flex-direction: column;
+    width: 370px;
+    max-width: calc(100vw - 28px);
+    height: 500px;
+    max-height: calc(100vh - 120px);
+    overflow: hidden;
+    background: #ffffff;
+    
+    /* ORILLA MORADA EN LA VENTANA DE CHAT */
+    border: 2px solid #7c3aed;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px -10px rgba(15, 23, 42, 0.18),
+        0 0 25px rgba(124, 58, 237, 0.25);
+    animation: aparecerAkariIA 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes aparecerAkariIA {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.encabezado-ia {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    color: #ffffff;
+}
+
+.encabezado-ia strong {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.encabezado-ia p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #f3e8ff;
+    font-weight: 500;
+}
+
+#cerrarAkariIA {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#cerrarAkariIA:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: rotate(90deg);
+}
+
+.contenido-ia {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+.mensaje-ia {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.mensaje-ia.asistente {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+}
+
+.mensaje-ia.cliente {
+    align-self: flex-end;
+    background: #7c3aed;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+    font-weight: 500;
+}
+
+.formulario-chat-ia {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+}
+
+#entradaAkariIA {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    outline: none;
+    font-size: 13.5px;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+#entradaAkariIA:focus {
+    background: #ffffff;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+#enviarAkariIA {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    background: #7c3aed;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+    transition: all 0.2s ease;
+}
+
+#enviarAkariIA:hover:not(:disabled) {
+    background: #6d28d9;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+    .boton-akari-ia {
+        right: 14px;
+        bottom: 16px;
+        padding: 8px 16px 8px 10px;
+    }
+
+    .ventana-akari-ia {
+        right: 14px;
+        bottom: 78px;
+        width: calc(100vw - 28px);
+    }
+}
