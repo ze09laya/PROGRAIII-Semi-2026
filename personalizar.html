@@ -15,22 +15,30 @@
 <body>
 
     <!-- NAVEGACIÓN -->
-    <nav class="navbar navbar-akari">
-        <div class="container nav-contenido">
+    <!-- NAVEGACIÓN -->
+<nav class="navbar navbar-akari">
+    <div class="container nav-contenido">
 
-            <a href="/index.html" class="marca-akari">
-                <img src="/img/logo-akari.jpg" alt="Logo de Akari Store">
-                <span>AKARI <strong>STORE</strong></span>
-            </a>
+        <a href="/index.html" class="marca-akari">
+            <img src="/img/logo-akari.jpg" alt="Logo de Akari Store" class="logo-akari">
+            <span>AKARI <strong>STORE</strong></span>
+        </a>
 
+       
+        <div class="nav-derecha">
             <div class="nav-enlaces">
                 <a href="/index.html">Inicio</a>
                 <a href="/catalogo.html">Catálogo</a>
-                <a href="/personalizar.html" class="enlace-activo">Personalizar</a>
+                <a href="/pedidos.html" class="enlace-activo">Mis Pedidos</a>
             </div>
 
+            <button id="btnCerrar" class="btn-cerrar-sesion" type="button">
+                Cerrar sesión
+            </button>
         </div>
-    </nav>
+
+    </div>
+</nav>
 
     <!-- PORTADA -->
     <header class="portada-personalizar">
@@ -330,7 +338,7 @@
         <a href="/index.html" class="marca-akari marca-footer">
             AKARI <strong>STORE</strong>
         </a>
-        <p>Camisas urbanas | Diseños únicos</p>
+        <p>Camisas urbanas | Cuadros Personalizados | Termos con diseños únicos</p>
         <p>Envíos nacionales en El Salvador</p>
     </footer>
 
@@ -468,6 +476,27 @@
         window.open(url, "_blank", "noopener,noreferrer");
     });
     </script>
+
+
+
+<script>
+document.getElementById("btnCerrar").addEventListener("click", async () => {
+    try {
+        await fetch("/logout", {
+            method: "POST",
+            credentials: "same-origin"
+        });
+    } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+    }
+
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("nombre");
+    localStorage.removeItem("rol");
+
+    window.location.replace("/login.html");
+});
+</script>
 
 </body>
 </html>

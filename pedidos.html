@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos | Akari Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pedidos.css">
+</head>
+<body>
+<nav class="navbar-akari">
+  <div class="contenedor nav-contenido">
+    <a class="marca" href="/index.html">
+      <img src="/img/logo-akari.jpg" alt="Akari Store">
+      <span>AKARI <strong>STORE</strong></span>
+    </a>
+    <div class="nav-enlaces">
+      <a href="/index.html">Inicio</a>
+      <a href="/catalogo.html">Catálogo</a>
+      <a href="/personalizar.html">Personalizar</a>
+      <button id="btnCerrar" class="btn-cerrar" type="button">Cerrar sesión</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero-pedidos">
+  <div class="contenedor">
+    <span class="eyebrow">AKARI STORE</span>
+    <h1>Pedidos <span>fáciles y seguros.</span></h1>
+    <p>Elige tus productos, indica cómo quieres recibirlos y consulta el estado de tus pedidos.</p>
+  </div>
+</header>
+
+<main class="contenedor contenido-principal">
+  <div id="mensaje" class="alert d-none" role="alert"></div>
+
+  <section id="seccionCompra" class="panel">
+    <div class="encabezado-panel">
+      <div>
+        <h2>Crear un pedido</h2>
+        <p>Agrega productos al carrito y completa tus datos de entrega.</p>
+      </div>
+      <a href="/catalogo.html" class="link-secundario">Ver catálogo ↗</a>
+    </div>
+
+    <div class="grid-compra">
+      <div class="bloque-compra">
+        <h3>1. Selecciona un producto</h3>
+
+        <label for="productoSelect">Producto disponible</label>
+        <select id="productoSelect" class="control">
+          <option value="">Cargando productos...</option>
+        </select>
+
+        <div id="infoProducto" class="info-producto">
+          Selecciona un producto para ver su precio.
+        </div>
+
+        <div class="grid-campos">
+          <div>
+            <label for="cantidad">Cantidad</label>
+            <input id="cantidad" class="control" type="number" min="1" max="100" value="1">
+          </div>
+
+          <div>
+            <label for="talla">Talla (si aplica)</label>
+            <select id="talla" class="control">
+              <option value="">No aplica</option>
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+              <option>XXL</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="color">Color (opcional)</label>
+        <input id="color" class="control" maxlength="60" placeholder="Ej. Negro, blanco, beige">
+
+        <label for="personalizacion">Personalización (opcional)</label>
+        <textarea id="personalizacion" class="control" rows="2" maxlength="500"
+          placeholder="Diseño, frase, nombre o detalles especiales"></textarea>
+
+        <button id="btnAgregar" class="btn-principal" type="button">
+          Agregar al pedido
+        </button>
+      </div>
+
+      <div class="bloque-carrito">
+        <h3>2. Tu pedido</h3>
+        <div id="carritoVacio" class="carrito-vacio">Todavía no agregas productos.</div>
+        <div id="carrito"></div>
+
+        <div class="total-carrito">
+          <span>Total estimado</span>
+          <strong id="total">$0.00</strong>
+        </div>
+
+        <p class="texto-ayuda">
+          El total se calcula con los precios actuales del catálogo. Los costos de envío,
+          si aplican, se confirmarán antes de aceptar el pedido.
+        </p>
+      </div>
+    </div>
+
+    <hr class="separador">
+
+    <h3>3. Datos del cliente y entrega</h3>
+
+    <form id="formPedido">
+      <div class="grid-form">
+        <div>
+          <label for="clienteNombre">Nombre completo *</label>
+          <input id="clienteNombre" class="control" maxlength="120" required>
+        </div>
+
+        <div>
+          <label for="telefono">Teléfono / WhatsApp *</label>
+          <input id="telefono" class="control" type="tel" maxlength="30" required>
+        </div>
+
+        <div>
+          <label for="municipio">Departamento y municipio *</label>
+          <input id="municipio" class="control" maxlength="150"
+            placeholder="Ej. Usulután, Usulután" required>
+        </div>
+
+        <div>
+          <label for="entrega">Método de entrega *</label>
+          <select id="entrega" class="control" required>
+            <option value="Envío a domicilio">Envío a domicilio</option>
+            <option value="Retiro en punto acordado">Retiro en punto acordado</option>
+          </select>
+        </div>
+
+        <div id="contenedorDireccion" class="campo-completo">
+          <label for="direccion">Dirección de entrega *</label>
+          <textarea id="direccion" class="control" rows="2" maxlength="500"
+            placeholder="Colonia, calle, punto de referencia"></textarea>
+        </div>
+
+        <div>
+          <label for="pago">Forma de pago *</label>
+          <select id="pago" class="control" required>
+            <option value="Pago por coordinar por WhatsApp">Coordinar por WhatsApp</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia bancaria">Transferencia bancaria</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="notas">Notas adicionales</label>
+          <input id="notas" class="control" maxlength="1000"
+            placeholder="Indicaciones para el pedido">
+        </div>
+      </div>
+
+      <div class="aviso">
+        <strong>Importante:</strong> tu pedido se registrará con estado <b>Pendiente</b>.
+        Akari Store confirmará la disponibilidad, el costo de envío y los detalles de pago
+        antes de prepararlo.
+      </div>
+
+      <button id="btnEnviarPedido" class="btn-principal btn-enviar" type="submit">
+        Confirmar solicitud de pedido
+      </button>
+    </form>
+  </section>
+
+  <section id="seccionPedidos" class="panel">
+    <div class="encabezado-panel">
+      <div>
+        <h2 id="tituloPedidos">Mis pedidos</h2>
+        <p id="subtituloPedidos">Consulta el estado y los detalles de tus solicitudes.</p>
+      </div>
+      <button id="btnActualizar" class="btn-secundario" type="button">Actualizar</button>
+    </div>
+
+    <div id="listaPedidos" class="lista-pedidos">
+      <p class="texto-ayuda">Cargando pedidos...</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-akari">
+  <strong>AKARI STORE</strong>
+  <p>Camisas urbanas | Cuadros Personalizados | Termos con diseños únicos</p>
+  <p>Envíos nacionales en El Salvador</p>
+</footer>
+
+<script>
+"use strict";
+
+const rol = (localStorage.getItem("rol") || "").trim().toLowerCase();
+const esAdmin = rol === "administrador" || rol === "empleado";
+const productosSelect = document.getElementById("productoSelect");
+const carrito = [];
+let productosDisponibles = [];
+
+const dinero = valor => "$" + Number(valor || 0).toFixed(2);
+
+const escapar = texto =>
+  String(texto ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+
+function mostrarMensaje(texto, tipo = "danger") {
+  const el = document.getElementById("mensaje");
+  el.textContent = texto;
+  el.className = "alert alert-" + tipo;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function ocultarMensaje() {
+  const el = document.getElementById("mensaje");
+  el.textContent = "";
+  el.className = "alert d-none";
+}
+
+async function cargarProductos() {
+  try {
+    const r = await fetch("/productos", {
+      cache: "no-store",
+      credentials: "same-origin"
+    });
+
+    const d = await r.json();
+
+    if (!r.ok || d.estado === false) {
+      throw new Error(d.mensaje || "No se pudieron cargar los productos.");
+    }
+
+    productosDisponibles = (
+      Array.isArray(d) ? d : (d.productos || [])
+    ).filter(p => Number(p.activo) === 1);
+
+    productosSelect.innerHTML =
+      '<option value="">Selecciona un producto</option>';
+
+    productosDisponibles.forEach(p => {
+      const o = document.createElement("option");
+      o.value = p.id_producto;
+      o.textContent = p.nombre + " — " + dinero(p.precio);
+      productosSelect.appendChild(o);
+    });
+
+    if (!productosDisponibles.length) {
+      productosSelect.innerHTML =
+        '<option value="">No hay productos disponibles</option>';
+    }
+
+    actualizarInfoProducto();
+  } catch (e) {
+    mostrarMensaje("Error al cargar productos: " + e.message);
+  }
+}
+
+function productoSeleccionado() {
+  return productosDisponibles.find(
+    p => String(p.id_producto) === productosSelect.value
+  );
+}
+
+function actualizarInfoProducto() {
+  const p = productoSeleccionado();
+
+  document.getElementById("infoProducto").textContent = p
+    ? ((p.tipo_producto || "") +
+       (p.categoria ? " · " + p.categoria : "") +
+       " · Precio: " + dinero(p.precio))
+    : "Selecciona un producto para ver su precio.";
+}
+
+function dibujarCarrito() {
+  const caja = document.getElementById("carrito");
+  caja.innerHTML = "";
+
+  document.getElementById("carritoVacio").style.display =
+    carrito.length ? "none" : "block";
+
+  carrito.forEach((item, i) => {
+    const fila = document.createElement("div");
+    fila.className = "item-carrito";
+
+    fila.innerHTML = `
+      <div class="item-carrito-info">
+        <strong>${escapar(item.nombre)}</strong>
+        <span>${item.cantidad} × ${dinero(item.precio)}</span>
+        ${item.talla ? `<small>Talla: ${escapar(item.talla)}</small>` : ""}
+        ${item.color ? `<small>Color: ${escapar(item.color)}</small>` : ""}
+        ${item.personalizacion ? `<small>${escapar(item.personalizacion)}</small>` : ""}
+      </div>
+      <div class="item-carrito-final">
+        <strong>${dinero(item.precio * item.cantidad)}</strong>
+        <button type="button" class="btn-quitar" data-quitar="${i}"
+          aria-label="Quitar producto">Quitar</button>
+      </div>
+    `;
+
+    caja.appendChild(fila);
+  });
+
+  document.getElementById("total").textContent = dinero(
+    carrito.reduce((s, i) => s + i.precio * i.cantidad, 0)
+  );
+}
+
+document.getElementById("btnAgregar").addEventListener("click", () => {
+  ocultarMensaje();
+
+  const p = productoSeleccionado();
+  const cantidad = Number(document.getElementById("cantidad").value);
+
+  if (!p) {
+    mostrarMensaje("Selecciona un producto disponible.", "warning");
+    return;
+  }
+
+  if (!Number.isInteger(cantidad) || cantidad < 1 || cantidad > 100) {
+    mostrarMensaje("La cantidad debe estar entre 1 y 100.", "warning");
+    return;
+  }
+
+  carrito.push({
+    id_producto: Number(p.id_producto),
+    nombre: p.nombre,
+    precio: Number(p.precio),
+    cantidad,
+    talla: document.getElementById("talla").value,
+    color: document.getElementById("color").value.trim(),
+    personalizacion: document.getElementById("personalizacion").value.trim()
+  });
+
+  dibujarCarrito();
+
+  document.getElementById("cantidad").value = "1";
+  document.getElementById("color").value = "";
+  document.getElementById("personalizacion").value = "";
+
+  mostrarMensaje("Producto agregado al pedido.", "success");
+});
+
+document.getElementById("carrito").addEventListener("click", e => {
+  const b = e.target.closest("[data-quitar]");
+  if (!b) return;
+
+  carrito.splice(Number(b.dataset.quitar), 1);
+  dibujarCarrito();
+});
+
+function ajustarEntrega() {
+  const envio =
+    document.getElementById("entrega").value === "Envío a domicilio";
+
+  document.getElementById("contenedorDireccion").style.display =
+    envio ? "block" : "none";
+
+  document.getElementById("direccion").required = envio;
+
+  if (!envio) {
+    document.getElementById("direccion").value = "";
+  }
+}
+
+document.getElementById("entrega").addEventListener("change", ajustarEntrega);
+
+document.getElementById("productoSelect").addEventListener("change", actualizarInfoProducto);
+
+document.getElementById("formPedido").addEventListener("submit", async e => {
+  e.preventDefault();
+  ocultarMensaje();
+
+  if (!carrito.length) {
+    mostrarMensaje("Agrega al menos un producto al pedido.", "warning");
+    return;
+  }
+
+  const boton = document.getElementById("btnEnviarPedido");
+  boton.disabled = true;
+  boton.textContent = "Registrando pedido...";
+
+  const payload = {
+    cliente_nombre: document.getElementById("clienteNombre").value.trim(),
+    telefono: document.getElementById("telefono").value.trim(),
+    departamento_municipio: document.getElementById("municipio").value.trim(),
+    direccion: document.getElementById("direccion").value.trim(),
+    tipo_entrega: document.getElementById("entrega").value,
+    metodo_pago: document.getElementById("pago").value,
+    notas: document.getElementById("notas").value.trim(),
+    items: carrito.map(i => ({
+      id_producto: i.id_producto,
+      cantidad: i.cantidad,
+      talla: i.talla,
+      color: i.color,
+      personalizacion: i.personalizacion
+    }))
+  };
+
+  try {
+    const r = await fetch("/pedidos/crear", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(payload)
+    });
+
+    const d = await r.json();
+
+    if (!r.ok || d.estado === false) {
+      throw new Error(d.mensaje || "No se pudo registrar el pedido.");
+    }
+
+    carrito.length = 0;
+    dibujarCarrito();
+    document.getElementById("formPedido").reset();
+    ajustarEntrega();
+
+    mostrarMensaje(
+      "Pedido #" + d.id_pedido +
+      " registrado. Total estimado: " + dinero(d.total) +
+      ". Estado: Pendiente.",
+      "success"
+    );
+
+    await cargarPedidos();
+  } catch (err) {
+    mostrarMensaje(err.message);
+  } finally {
+    boton.disabled = false;
+    boton.textContent = "Confirmar solicitud de pedido";
+  }
+});
+
+const estados = [
+  "Pendiente",
+  "Confirmado",
+  "En preparación",
+  "Enviado",
+  "Listo para retirar",
+  "Entregado",
+  "Cancelado"
+];
+
+function fechaBonita(v) {
+  if (!v) return "";
+
+  const d = new Date(String(v).replace(" ", "T"));
+
+  return isNaN(d) ? String(v) : d.toLocaleString("es-SV");
+}
+
+function renderPedidos(pedidos) {
+  const cont = document.getElementById("listaPedidos");
+  cont.innerHTML = "";
+
+  if (!pedidos.length) {
+    cont.innerHTML =
+      '<div class="sin-pedidos">Todavía no hay pedidos registrados.</div>';
+    return;
+  }
+
+  pedidos.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "pedido-card";
+
+    const items = (p.items || []).map(i => `
+      <div class="detalle-item">
+        <span>
+          ${escapar(i.nombre_producto)} × ${Number(i.cantidad)}
+          ${i.talla ? " · Talla " + escapar(i.talla) : ""}
+          ${i.color ? " · " + escapar(i.color) : ""}
+          ${i.personalizacion ? " · " + escapar(i.personalizacion) : ""}
+        </span>
+        <strong>${dinero(Number(i.precio_unitario) * Number(i.cantidad))}</strong>
+      </div>
+    `).join("");
+
+    const selector = esAdmin ? `
+      <div class="cambiar-estado">
+        <label for="estado-${p.id_pedido}">Estado del pedido</label>
+        <select class="control" id="estado-${p.id_pedido}"
+          data-estado-pedido="${p.id_pedido}">
+          ${estados.map(e => `
+            <option ${e === p.estado ? "selected" : ""}>${e}</option>
+          `).join("")}
+        </select>
+        <button type="button" class="btn-secundario"
+          data-guardar-estado="${p.id_pedido}">Guardar estado</button>
+      </div>
+    ` : "";
+
+    card.innerHTML = `
+      <div class="pedido-cabecera">
+        <div>
+          <span class="pedido-numero">PEDIDO #${Number(p.id_pedido)}</span>
+          <h3>${escapar(p.cliente_nombre)}</h3>
+          <small>${fechaBonita(p.fecha_creacion)}</small>
+        </div>
+        <span class="estado estado-${String(p.estado).toLowerCase().replace(/[^a-záéíóú]+/g, "-")}">
+          ${escapar(p.estado)}
+        </span>
+      </div>
+
+      ${esAdmin ? `
+        <div class="datos-pedido">
+          <span><b>Teléfono:</b> ${escapar(p.telefono)}</span>
+          <span><b>Zona:</b> ${escapar(p.departamento_municipio)}</span>
+        </div>
+      ` : ""}
+
+      <div class="pedido-items">${items}</div>
+
+      <div class="datos-pedido">
+        <span><b>Entrega:</b> ${escapar(p.tipo_entrega)}</span>
+        <span><b>Pago:</b> ${escapar(p.metodo_pago)}</span>
+        ${p.direccion ? `<span><b>Dirección:</b> ${escapar(p.direccion)}</span>` : ""}
+        ${p.notas ? `<span><b>Notas:</b> ${escapar(p.notas)}</span>` : ""}
+      </div>
+
+      <div class="pedido-total">
+        <span>Total estimado</span>
+        <strong>${dinero(p.total)}</strong>
+      </div>
+
+      ${selector}
+    `;
+
+    cont.appendChild(card);
+  });
+}
+
+async function cargarPedidos() {
+  const cont = document.getElementById("listaPedidos");
+  cont.innerHTML = '<p class="texto-ayuda">Cargando pedidos...</p>';
+
+  try {
+    const endpoint = esAdmin ? "/pedidos/admin" : "/pedidos/mios";
+
+    const r = await fetch(endpoint, {
+      cache: "no-store",
+      credentials: "same-origin"
+    });
+
+    const d = await r.json();
+
+    if (!r.ok || d.estado === false) {
+      throw new Error(d.mensaje || "No se pudieron cargar los pedidos.");
+    }
+
+    renderPedidos(d.pedidos || []);
+  } catch (e) {
+    cont.innerHTML =
+      '<div class="sin-pedidos">' + escapar(e.message) + '</div>';
+  }
+}
+
+document.getElementById("listaPedidos").addEventListener("click", async e => {
+  const b = e.target.closest("[data-guardar-estado]");
+  if (!b) return;
+
+  const id = Number(b.dataset.guardarEstado);
+  const estado = document.getElementById("estado-" + id).value;
+
+  b.disabled = true;
+
+  try {
+    const r = await fetch("/pedidos/estado", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ id_pedido: id, estado })
+    });
+
+    const d = await r.json();
+
+    if (!r.ok || d.estado === false) {
+      throw new Error(d.mensaje || "No se pudo actualizar.");
+    }
+
+    mostrarMensaje("Estado del pedido actualizado.", "success");
+    await cargarPedidos();
+  } catch (err) {
+    mostrarMensaje(err.message);
+  } finally {
+    b.disabled = false;
+  }
+});
+
+document.getElementById("btnActualizar").addEventListener("click", cargarPedidos);
+
+document.getElementById("btnCerrar").addEventListener("click", async () => {
+  try {
+    await fetch("/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("nombre");
+  localStorage.removeItem("rol");
+  window.location.replace("/login.html");
+});
+
+if (esAdmin) {
+  document.getElementById("tituloPedidos").textContent = "Administrar pedidos";
+  document.getElementById("subtituloPedidos").textContent =
+    "Consulta todos los pedidos y actualiza su estado.";
+}
+
+ajustarEntrega();
+dibujarCarrito();
+cargarProductos();
+cargarPedidos();
+</script>
+</body>
+</html>
