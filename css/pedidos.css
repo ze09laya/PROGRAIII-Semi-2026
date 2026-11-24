@@ -42,9 +42,7 @@ a {
     margin: 0 auto;
 }
 
-/* =========================================
-   NAVEGACIÓN & LOGO CIRCULAR CON GLOW
-========================================= */
+
 
 .navbar-akari {
     background: rgba(255, 255, 255, 0.95) !important;
@@ -75,7 +73,7 @@ a {
     text-transform: uppercase;
 }
 
-/* LOGO CIRCULAR FLOTANTE E INTERACTIVO */
+
 .marca img {
     width: 60px !important;
     height: 60px !important;
@@ -125,7 +123,7 @@ a {
     color: var(--akari-morado);
 }
 
-/* BOTÓN CERRAR SESIÓN ESTILIZADO EN MORADO */
+
 #btnCerrar,
 .btn-cerrar {
     background-color: var(--akari-morado) !important;
@@ -149,9 +147,7 @@ a {
     box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5) !important;
 }
 
-/* =========================================
-   HERO / PORTADA DE PEDIDOS
-========================================= */
+
 
 .hero-pedidos {
     min-height: 320px;
@@ -204,9 +200,7 @@ a {
     font-weight: 500;
 }
 
-/* =========================================
-   PANELES Y CONTENEDORES PRINCIPALES
-========================================= */
+
 
 .contenido-principal {
     padding-bottom: 60px;
@@ -256,9 +250,7 @@ a {
     text-decoration: underline;
 }
 
-/* =========================================
-   GRILLA DE COMPRA & CARRITO
-========================================= */
+
 
 .grid-compra {
     display: grid;
@@ -337,9 +329,7 @@ textarea.control {
     margin-bottom: 12px;
 }
 
-/* =========================================
-   BOTONES Y ACCIONES
-========================================= */
+
 
 .btn-principal {
     display: flex;
@@ -385,9 +375,7 @@ textarea.control {
     color: var(--akari-texto);
 }
 
-/* =========================================
-   CARRITO DE COMPRAS
-========================================= */
+
 
 .carrito-vacio {
     color: var(--akari-gris);
@@ -478,9 +466,8 @@ textarea.control {
     margin: 30px 0 20px;
 }
 
-/* =========================================
-   FORMULARIO DE PEDIDO & AVISOS
-========================================= */
+
+
 
 .grid-form {
     display: grid;
@@ -506,9 +493,7 @@ textarea.control {
     margin-top: 10px;
 }
 
-/* =========================================
-   SECCIÓN DE HISTORIAL DE PEDIDOS
-========================================= */
+
 
 .lista-pedidos {
     display: flex;
@@ -628,9 +613,7 @@ textarea.control {
     font-size: 14px;
 }
 
-/* =========================================
-   PIE DE PÁGINA
-========================================= */
+
 
 .footer-akari {
     padding: 45px 20px;
@@ -662,9 +645,7 @@ textarea.control {
     letter-spacing: 1px;
 }
 
-/* =========================================
-   RESPONSIVE DESIGN
-========================================= */
+
 
 @media (max-width: 768px) {
     .nav-contenido {

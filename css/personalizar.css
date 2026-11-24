@@ -1,7 +1,3 @@
-/* ==========================================
-   AKARI STORE - ESTILOS (URBAN PURPLE)
-   ========================================== */
-
 :root {
     --akari-morado: #7c3aed;
     --akari-morado-oscuro: #6d28d9;
@@ -38,9 +34,7 @@ a {
     transition: all 0.25s ease;
 }
 
-/* =========================================
-   NAVEGACIÓN & LOGO CIRCULAR CON GLOW
-========================================= */
+
 
 .navbar-akari {
     background: rgba(255, 255, 255, 0.95) !important;
@@ -74,7 +68,7 @@ a {
     text-transform: uppercase;
 }
 
-/* LOGO CIRCULAR FLOTANTE E INTERACTIVO */
+
 .marca-akari img,
 .logo-akari {
     width: 60px !important;
@@ -128,9 +122,7 @@ a {
     color: var(--akari-morado);
 }
 
-/* =========================================
-   BOTÓN CERRAR SESIÓN (GRANDE Y EN MORADO)
-========================================= */
+
 
 #btnCerrar,
 .btn-cerrar-sesion {
@@ -155,9 +147,7 @@ a {
     box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5) !important;
 }
 
-/* =========================================
-   PORTADA
-========================================= */
+
 
 .portada-personalizar {
     min-height: 365px;
@@ -240,9 +230,7 @@ a {
     box-shadow: var(--sombra-glow);
 }
 
-/* =========================================
-   SECCIÓN PRINCIPAL Y FORMULARIO
-========================================= */
+
 
 .seccion-personalizar {
     max-width: 1140px;
@@ -379,9 +367,7 @@ a {
     gap: 16px;
 }
 
-/* =========================================
-   FOTOGRAFÍAS
-========================================= */
+
 
 .zona-fotos {
     padding: 27px 18px;
@@ -449,9 +435,7 @@ a {
     font-size: 12px;
 }
 
-/* =========================================
-   CONFIRMACIÓN Y ENVÍO
-========================================= */
+
 
 .aviso-pedido {
     padding: 18px;
@@ -533,9 +517,7 @@ a {
     font-size: 11px;
 }
 
-/* =========================================
-   PANEL INFORMATIVO
-========================================= */
+
 
 .panel-informativo {
     display: flex;
@@ -604,9 +586,7 @@ a {
     color: #fff;
 }
 
-/* =========================================
-   PIE DE PÁGINA (OSCURO URBANO)
-========================================= */
+
 
 .footer-akari {
     padding: 45px 20px;
@@ -711,7 +691,7 @@ a {
     }
 }
 
-/* NAVEGACIÓN FLEXIBLE */
+
 .navbar-akari {
     background: #ffffff !important;
     border-bottom: 1px solid var(--akari-borde);
@@ -740,7 +720,8 @@ a {
     gap: 22px;
 }
 
-/* CERRAR SESIÓN - ESTILO RECTANGULAR MORADO */
+
+
 #btnCerrar,
 .btn-cerrar-sesion {
     display: inline-block !important;

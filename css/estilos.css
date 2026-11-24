@@ -45,9 +45,7 @@ a {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* =========================
-   BARRA DE NAVEGACIÓN Y LOGO (CORREGIDO)
-========================= */
+
 
 .navbar-akari {
     width: 100%;
@@ -61,7 +59,7 @@ a {
 
 .contenedor-nav {
     width: min(1200px, 92%);
-    height: 90px; /* Altura fija para evitar desbordamientos */
+    height: 90px; 
     margin: auto;
     display: flex;
     justify-content: space-between;
@@ -69,7 +67,7 @@ a {
     gap: 20px;
 }
 
-/* Reglas del Logo */
+
 .logo {
     display: flex;
     align-items: center;
@@ -83,7 +81,7 @@ a {
     text-decoration: none;
 }
 
-/* CONTROL DIRECTO DEL TAMAÑO DE LA IMAGEN DEL LOGO */
+
 .logo img, 
 .logo-akari {
     width: 65px !important;
@@ -120,12 +118,12 @@ a {
     color: var(--purple-primary);
 }
 
-/* MENÚ DE NAVEGACIÓN */
+
 .menu {
     display: flex;
     align-items: center;
     gap: 24px;
-    margin-bottom: 0; /* Anula margen de Bootstrap */
+    margin-bottom: 0; 
 }
 
 .menu a {
@@ -177,9 +175,7 @@ a {
     color: #0f172a;
 }
 
-/* =========================
-   PORTADA PRINCIPAL
-========================= */
+
 
 .portada {
     width: min(1200px, 92%);
@@ -332,9 +328,7 @@ a {
     text-transform: uppercase;
 }
 
-/* =========================
-   SECCIONES GENERALES
-========================= */
+
 
 .seccion {
     padding: 75px 4%;
@@ -366,9 +360,7 @@ a {
     font-size: 14px;
 }
 
-/* =========================
-   CATEGORÍAS
-========================= */
+
 
 .categorias {
     background: #f1f5f9;
@@ -444,9 +436,7 @@ a {
     letter-spacing: 1px;
 }
 
-/* =========================
-   PRODUCTOS DESTACADOS
-========================= */
+
 
 .productos {
     background: var(--blanco);
@@ -554,9 +544,7 @@ a {
     margin-top: 35px;
 }
 
-/* =========================
-   PERSONALIZACIÓN
-========================= */
+
 
 .personalizacion {
     padding: 80px 5%;
@@ -610,9 +598,7 @@ a {
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
 }
 
-/* =========================
-   BENEFICIOS
-========================= */
+
 
 .beneficios {
     background: #f8fafc;
@@ -670,12 +656,7 @@ a {
 }
 
 
-/* =========================
-   PIE DE PÁGINA
-========================= */
-/* =========================
-   PIE DE PÁGINA (PURPLE URBAN 100% MORADO)
-========================= */
+
 
 .footer-akari {
     background: #0d0814;
@@ -716,7 +697,7 @@ a {
     margin-bottom: 6px;
 }
 
-/* Redes Sociales con orillas estrictamente moradas */
+
 .footer-redes {
     display: flex;
     flex-wrap: wrap;
@@ -743,7 +724,7 @@ a {
     letter-spacing: 1.2px;
     text-decoration: none;
     background: rgba(124, 58, 237, 0.12);
-    /* Orillas / Bordes en tono morado */
+
     border: 1.5px solid rgba(168, 85, 247, 0.5) !important;
     backdrop-filter: blur(8px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -810,7 +791,7 @@ a {
     margin-bottom: 6px;
 }
 
-/* Enlaces de redes sociales estilo Glassmorphism */
+
 .footer-redes {
     display: flex;
     flex-wrap: wrap;
@@ -878,9 +859,7 @@ a {
     background: rgba(0, 0, 0, 0.2);
 }
 
-/* =========================
-   DISEÑO RESPONSIVO
-========================= */
+
 
 @media (max-width: 1000px) {
     .menu {

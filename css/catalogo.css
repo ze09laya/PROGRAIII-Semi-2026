@@ -1,9 +1,7 @@
-/* ==========================================
-   AKARI STORE - ESTILOS DEL CATÁLOGO (URBAN PURPLE MODERN)
-========================================== */
+
 
 :root {
-    /* Paleta Urban Purple */
+    
     --purple-primary: #7c3aed;  
     --purple-accent: #9333ea;   
     --morado-neon: #7c3aed;
@@ -22,9 +20,7 @@
     --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* ==========================================
-   CONFIGURACIÓN GENERAL
-========================================== */
+
 
 * {
     box-sizing: border-box;
@@ -49,9 +45,7 @@ a {
 }
 
 
-/* ==========================================
-   NAVEGACIÓN & LOGO CIRCULAR
-========================================== */
+
 
 .navbar-akari {
     width: 100%;
@@ -111,9 +105,7 @@ a {
 }
 
 
-/* ==========================================
-   TÍTULOS Y ENCABEZADOS
-========================================== */
+
 
 .titulo {
     color: var(--texto);
@@ -131,9 +123,7 @@ h4, h5 {
 }
 
 
-/* ==========================================
-   BOTONES ESTILIZADOS
-========================================== */
+
 
 .btn-akari {
     background: var(--purple-primary) !important;
@@ -178,9 +168,7 @@ h4, h5 {
 }
 
 
-/* ==========================================
-   FORMULARIO DE ADMINISTRACIÓN
-========================================== */
+
 
 #formularioProducto {
     display: none;
@@ -258,9 +246,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   BUSCADOR Y FILTROS
-========================================== */
+
 
 .filtros-catalogo {
     padding: 24px;
@@ -293,9 +279,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   TARJETAS DE PRODUCTOS
-========================================== */
+
 
 #catalogo {
     align-items: stretch;
@@ -367,9 +351,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   ETIQUETAS DE CATEGORÍA & BADGES
-========================================== */
+
 
 .etiqueta-categoria {
     display: inline-block;
@@ -385,9 +367,8 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   BOTONES DE ADMINISTRACIÓN EN TARJETAS
-========================================== */
+
+
 
 .producto-card .btn {
     font-size: 11px;
@@ -418,9 +399,8 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   MENSAJES Y RESULTADOS
-========================================== */
+
+
 
 #mensaje {
     border-radius: 14px !important;
@@ -450,9 +430,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   PIE DE PÁGINA (MONOCROMÁTICO MORADO URBANO)
-========================================== */
+
 
 .footer-akari,
 .footer-catalogo {
@@ -504,7 +482,7 @@ textarea.form-control {
     text-transform: uppercase;
 }
 
-/* Redes Sociales con orillas estrictamente moradas */
+
 .footer-redes {
     display: flex;
     flex-wrap: wrap;
@@ -558,9 +536,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   RESPONSIVE - TABLETAS
-========================================== */
+
 
 @media (max-width: 768px) {
     .filtros-catalogo {
@@ -577,9 +553,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   RESPONSIVE - MÓVILES
-========================================== */
+
 
 @media (max-width: 576px) {
     .navbar-akari .container {
@@ -619,9 +593,7 @@ textarea.form-control {
 }
 
 
-/* ==========================================
-   ACCESIBILIDAD Y RENDIMIENTO
-========================================== */
+
 
 button:focus-visible,
 a:focus-visible {
@@ -639,7 +611,7 @@ a:focus-visible {
     }
 }
 
-/* Botón Cerrar Sesión y AGREGAR Estilo Morado Urbano */
+
 #btnCerrar,
 .btn-cerrar,
 #btnGuardarCategoria {
@@ -665,9 +637,7 @@ a:focus-visible {
 }
 
 
-/* =========================================
-   AKARI IA - ASISTENTE FLOTANTE CON FORMA DE GATITO
-========================================= */
+
 
 .boton-akari-ia {
     position: fixed;
@@ -708,7 +678,7 @@ a:focus-visible {
         0 0 25px rgba(124, 58, 237, 0.4) !important;
 }
 
-/* CONTENEDOR CIRCULAR CON ORILLA MORADA Y FORMA DE OREJITAS */
+
 .gatito-ia,
 .boton-akari-ia img {
     width: 46px !important;
@@ -717,7 +687,7 @@ a:focus-visible {
     min-height: 46px !important;
     object-fit: cover !important;
     
-    /* Forma de orejita/gatito en el contenedor del logo */
+    
     border-radius: 50% 50% 45% 45% !important;
     padding: 3px;
     background: #ffffff;
@@ -746,9 +716,7 @@ a:focus-visible {
     font-weight: 900;
 }
 
-/* =========================================
-   VENTANA DE CHAT DE AKARI IA
-========================================= */
+
 
 .ventana-akari-ia[hidden] {
     display: none !important;

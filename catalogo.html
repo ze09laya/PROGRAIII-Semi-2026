@@ -41,7 +41,6 @@
         <p class="text-secondary">Encuentra diseños únicos para ti.</p>
     </div>
 
-    <!-- BOTONES DE ADMINISTRACIÓN -->
     <div id="panelAdministrador" class="mb-4 text-center" style="display:none">
         <button id="btnNuevo" class="btn btn-akari" type="button">
             + Agregar producto
@@ -51,7 +50,6 @@
         </button>
     </div>
 
-    <!-- ADMINISTRACIÓN DE CATEGORÍAS -->
     <section id="panelCategorias" class="card border-0 shadow-sm mb-4" style="display:none">
         <div class="card-body p-4">
             <h4 class="mb-3">Administrar categorías</h4>
@@ -102,7 +100,6 @@
         </div>
     </section>
 
-    <!-- FORMULARIO DE PRODUCTOS -->
     <section id="formularioProducto" class="card border-0 shadow-sm mb-4" style="display:none">
         <div class="card-body p-4">
             <h4 id="tituloFormulario" class="mb-3">Agregar producto</h4>
@@ -180,7 +177,7 @@
 
     <div id="mensaje" class="alert d-none" role="alert" aria-live="polite"></div>
 
-    <!-- BÚSQUEDA Y FILTROS -->
+
     <section class="filtros-catalogo mb-4">
         <h5 class="mb-3">Buscar productos</h5>
 
@@ -244,10 +241,6 @@
 <script>
 "use strict";
 
-/* =========================================
-   SESIÓN
-========================================= */
-
 const rol = (localStorage.getItem("rol") || "").trim().toLowerCase();
 const nombre = localStorage.getItem("nombre") || localStorage.getItem("usuario") || "";
 
@@ -256,10 +249,6 @@ const puedeAdministrar = rol === "administrador" || rol === "empleado";
 document.getElementById("nombreUsuario").textContent = nombre;
 document.getElementById("panelAdministrador").style.display =
     puedeAdministrar ? "block" : "none";
-
-/* =========================================
-   ELEMENTOS Y VARIABLES
-========================================= */
 
 const catalogo = document.getElementById("catalogo");
 const formulario = document.getElementById("formularioProducto");
@@ -278,10 +267,6 @@ const selectorTipoCategoriaAdmin =
 let productos = [];
 let categoriaEnEdicion = null;
 
-/* =========================================
-   CATEGORÍAS
-   Se almacenan en localStorage del navegador.
-========================================= */
 
 const CATEGORIAS_INICIALES = {
     "Camisas": [
@@ -341,10 +326,6 @@ function guardarCategoriasEnNavegador() {
     localStorage.setItem(CLAVE_CATEGORIAS, JSON.stringify(categoriasPorTipo));
 }
 
-/* =========================================
-   MENSAJES Y UTILIDADES
-========================================= */
-
 function mostrarMensaje(texto, tipo = "danger") {
     mensaje.textContent = texto;
     mensaje.className = "alert alert-" + tipo;
@@ -365,11 +346,6 @@ function escapar(texto) {
     })[letra]);
 }
 
-/* =========================================
-   ADMINISTRAR CATEGORÍAS
-========================================= */
-
-// Solo muestra las categorías del tipo elegido en el selector.
 function renderizarListaCategorias() {
     const lista = document.getElementById("listaCategoriasAdmin");
     const tipo = selectorTipoCategoriaAdmin.value;
@@ -474,17 +450,13 @@ function cancelarEdicionCategoria() {
     document.getElementById("btnCancelarEdicionCategoria").hidden = true;
 }
 
-
-
-
-
 selectorTipoCategoriaAdmin.addEventListener("change", () => {
     const tipoSeleccionado = selectorTipoCategoriaAdmin.value;
 
-    // Limpiar la edición sin reiniciar el selector de tipo.
+    
     cancelarEdicionCategoria();
 
-    // Conservar el tipo que se acaba de seleccionar.
+    
     selectorTipoCategoriaAdmin.value = tipoSeleccionado;
 
     ocultarMensaje();
@@ -586,9 +558,6 @@ document.getElementById("btnCerrarCategorias").addEventListener("click", () => {
     cancelarEdicionCategoria();
 });
 
-/* =========================================
-   SELECTORES DE CATEGORÍAS
-========================================= */
 
 function actualizarCategoriasFormulario(categoriaActual = "") {
     const categorias = categoriasPorTipo[selectorTipo.value] || [];
@@ -648,9 +617,7 @@ function actualizarFiltroCategorias(categoriaActual = "") {
         : "";
 }
 
-/* =========================================
-   FORMULARIO DE PRODUCTOS
-========================================= */
+
 
 function abrirFormulario(producto = null) {
     if (!puedeAdministrar) return;
@@ -707,9 +674,7 @@ selectorTipo.addEventListener("change", () => {
     actualizarCategoriasFormulario();
 });
 
-/* =========================================
-   MOSTRAR CATÁLOGO
-========================================= */
+
 
 function dibujarCatalogo() {
     const busqueda = document.getElementById("busqueda").value.trim().toLowerCase();
@@ -836,9 +801,6 @@ function dibujarCatalogo() {
     });
 }
 
-/* =========================================
-   CARGAR PRODUCTOS DEL SERVIDOR
-========================================= */
 
 async function cargarProductos() {
     const cargando = document.getElementById("cargando");
@@ -894,9 +856,7 @@ document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
     dibujarCatalogo();
 });
 
-/* =========================================
-   GUARDAR PRODUCTO
-========================================= */
+
 
 formProducto.addEventListener("submit", async event => {
     event.preventDefault();
@@ -942,9 +902,6 @@ formProducto.addEventListener("submit", async event => {
     }
 });
 
-/* =========================================
-   ELIMINAR PRODUCTO
-========================================= */
 
 async function eliminarProducto(id) {
     if (!confirm("¿Estás seguro de que deseas eliminar este producto?")) {
@@ -971,10 +928,6 @@ async function eliminarProducto(id) {
         mostrarMensaje("Error al eliminar: " + error.message);
     }
 }
-
-/* =========================================
-   BOTONES DE PRODUCTOS
-========================================= */
 
 catalogo.addEventListener("click", async event => {
     const boton = event.target.closest("button[data-accion]");
@@ -1032,10 +985,6 @@ catalogo.addEventListener("click", async event => {
     }
 });
 
-/* =========================================
-   CERRAR SESIÓN
-========================================= */
-
 document.getElementById("btnCerrar").addEventListener("click", async () => {
     try {
         await fetch("/logout", {
@@ -1053,10 +1002,6 @@ document.getElementById("btnCerrar").addEventListener("click", async () => {
     window.location.replace("/login.html");
 });
 
-/* =========================================
-   INICIALIZACIÓN
-========================================= */
-
 if (!rol) {
     window.location.replace("/login.html");
 } else {
@@ -1066,10 +1011,6 @@ if (!rol) {
 }
 </script>
 
-
-
-
-<!-- BOTÓN FLOTANTE DE AKARI IA -->
 <button
     id="btnAkariIA"
     class="boton-akari-ia"
@@ -1081,7 +1022,7 @@ if (!rol) {
     <span class="texto-ia">Akari IA</span>
 </button>
 
-<!-- VENTANA DEL ASISTENTE -->
+
 <div id="ventanaAkariIA" class="ventana-akari-ia" hidden>
     <div class="encabezado-ia">
         <div>
@@ -1113,7 +1054,7 @@ if (!rol) {
     </form>
 </div>
 
-<!-- FUNCIONAMIENTO DE AKARI IA -->
+
 <script>
 (() => {
     const boton = document.getElementById("btnAkariIA");
