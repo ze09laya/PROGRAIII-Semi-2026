@@ -14,7 +14,7 @@ PORT = 3000
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = "gemini-3.8-flash"
 
-# Estados alineados con CHECK_CLAUSE de la tabla pedidos en akari_store
+
 ESTADOS_PEDIDO_VALIDOS = {
     "pendiente": "Pendiente",
     "en proceso": "En proceso",
